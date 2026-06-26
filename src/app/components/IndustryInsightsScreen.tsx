@@ -1,4 +1,5 @@
-import { ArrowLeft, TrendingUp, TrendingDown, Minus, Lightbulb, Users2, Workflow } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { ArrowLeft, TrendingUp, TrendingDown, Minus, Lightbulb, Users2, Workflow, ChevronDown, CheckCircle2 } from "lucide-react";
 import { useI18n } from "../i18n";
 
 interface BenchmarkMetric {
@@ -10,12 +11,71 @@ interface BenchmarkMetric {
   bg: string;
 }
 
-const BENCHMARKS: BenchmarkMetric[] = [
-  { labelKey: "insights.metric.peopleReached", you: 728, sectorAvg: 540, unit: "", color: "#1B5E38", bg: "#E8F5EE" },
-  { labelKey: "insights.metric.digitalLiteracy", you: 43, sectorAvg: 31, unit: "pp", color: "#1A3A6B", bg: "#EBF3FB" },
-  { labelKey: "insights.metric.jobPlacement", you: 38, sectorAvg: 42, unit: "%", color: "#633806", bg: "#FAEEDA" },
-  { labelKey: "insights.metric.consentRate", you: 100, sectorAvg: 87, unit: "%", color: "#1B5E38", bg: "#E8F5EE" },
-];
+type SectorKey = "education" | "environment" | "health" | "community";
+
+interface SectorData {
+  emoji: string;
+  sectorKey: string;
+  compareValueKey: string;
+  practicesSubtitleKey: string;
+  sampleSize: number;
+  metrics: BenchmarkMetric[];
+}
+
+const SECTOR_DATA: Record<SectorKey, SectorData> = {
+  education: {
+    emoji: "🎓",
+    sectorKey: "industry.education",
+    compareValueKey: "insights.compareValue.education",
+    practicesSubtitleKey: "insights.practicesSubtitle",
+    sampleSize: 214,
+    metrics: [
+      { labelKey: "insights.metric.peopleReached", you: 728, sectorAvg: 540, unit: "", color: "#1B5E38", bg: "#E8F5EE" },
+      { labelKey: "insights.metric.digitalLiteracy", you: 43, sectorAvg: 31, unit: "pp", color: "#1A3A6B", bg: "#EBF3FB" },
+      { labelKey: "insights.metric.jobPlacement", you: 38, sectorAvg: 42, unit: "%", color: "#633806", bg: "#FAEEDA" },
+      { labelKey: "insights.metric.consentRate", you: 100, sectorAvg: 87, unit: "%", color: "#1B5E38", bg: "#E8F5EE" },
+    ],
+  },
+  environment: {
+    emoji: "🌿",
+    sectorKey: "industry.environment",
+    compareValueKey: "insights.compareValue.environment",
+    practicesSubtitleKey: "insights.practicesSubtitle.environment",
+    sampleSize: 87,
+    metrics: [
+      { labelKey: "insights.metric.peopleReached", you: 312, sectorAvg: 285, unit: "", color: "#1B5E38", bg: "#E8F5EE" },
+      { labelKey: "insights.metric.wastesDiverted", you: 8.4, sectorAvg: 5.1, unit: "t", color: "#1A3A6B", bg: "#EBF3FB" },
+      { labelKey: "insights.metric.sdgTagRate", you: 91, sectorAvg: 78, unit: "%", color: "#633806", bg: "#FAEEDA" },
+      { labelKey: "insights.metric.consentRate", you: 100, sectorAvg: 84, unit: "%", color: "#1B5E38", bg: "#E8F5EE" },
+    ],
+  },
+  health: {
+    emoji: "❤️",
+    sectorKey: "industry.health",
+    compareValueKey: "insights.compareValue.health",
+    practicesSubtitleKey: "insights.practicesSubtitle.health",
+    sampleSize: 156,
+    metrics: [
+      { labelKey: "insights.metric.peopleReached", you: 445, sectorAvg: 390, unit: "", color: "#1B5E38", bg: "#E8F5EE" },
+      { labelKey: "insights.metric.healthScreenings", you: 289, sectorAvg: 220, unit: "", color: "#1A3A6B", bg: "#EBF3FB" },
+      { labelKey: "insights.metric.careFollowUp", you: 74, sectorAvg: 58, unit: "%", color: "#633806", bg: "#FAEEDA" },
+      { labelKey: "insights.metric.consentRate", you: 100, sectorAvg: 91, unit: "%", color: "#1B5E38", bg: "#E8F5EE" },
+    ],
+  },
+  community: {
+    emoji: "🤝",
+    sectorKey: "industry.community",
+    compareValueKey: "insights.compareValue.community",
+    practicesSubtitleKey: "insights.practicesSubtitle.community",
+    sampleSize: 193,
+    metrics: [
+      { labelKey: "insights.metric.peopleReached", you: 563, sectorAvg: 420, unit: "", color: "#1B5E38", bg: "#E8F5EE" },
+      { labelKey: "insights.metric.employmentReadiness", you: 35, sectorAvg: 24, unit: "pp", color: "#1A3A6B", bg: "#EBF3FB" },
+      { labelKey: "insights.metric.digitalSkills", you: 67, sectorAvg: 49, unit: "%", color: "#633806", bg: "#FAEEDA" },
+      { labelKey: "insights.metric.consentRate", you: 100, sectorAvg: 88, unit: "%", color: "#1B5E38", bg: "#E8F5EE" },
+    ],
+  },
+};
 
 const PRACTICES = [
   { titleKey: "insights.practice1.title", bodyKey: "insights.practice1.body", icon: "📋" },
@@ -28,7 +88,7 @@ function ComparisonBar({ you, sectorAvg, unit, color }: { you: number; sectorAvg
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-3">
-        <span className="text-xs text-muted-foreground w-20 shrink-0">{/* you label set by caller */}</span>
+        <span className="text-xs text-muted-foreground w-20 shrink-0" />
         <div className="flex-1 h-2.5 bg-[#E4EBF2] rounded-full overflow-hidden">
           <div
             className="h-full rounded-full transition-all duration-700"
@@ -57,6 +117,21 @@ function ComparisonBar({ you, sectorAvg, unit, color }: { you: number; sectorAvg
 
 export function IndustryInsightsScreen({ onBack }: { onBack: () => void }) {
   const { t } = useI18n();
+  const [sector, setSector] = useState<SectorKey>("education");
+  const [showSectorDropdown, setShowSectorDropdown] = useState(false);
+  const sectorRef = useRef<HTMLDivElement>(null);
+
+  const currentSector = SECTOR_DATA[sector];
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (sectorRef.current && !sectorRef.current.contains(e.target as Node)) {
+        setShowSectorDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-6">
@@ -87,20 +162,58 @@ export function IndustryInsightsScreen({ onBack }: { onBack: () => void }) {
         </div>
       </div>
 
-      {/* Sector + sample size */}
+      {/* Sector card + selector */}
       <div className="flex items-center justify-between mb-4 bg-white rounded-xl border border-border p-4">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-[#E8F5EE] flex items-center justify-center shrink-0">
-            <span className="text-base">🎓</span>
+            <span className="text-base">{currentSector.emoji}</span>
           </div>
           <div>
             <p className="text-xs text-muted-foreground">{t("insights.yourSector")}</p>
-            <p className="text-sm font-semibold text-foreground">{t("industry.education")}</p>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <p className="text-sm font-semibold text-foreground">{t(currentSector.sectorKey)}</p>
+              <div className="relative" ref={sectorRef}>
+                <button
+                  onClick={() => setShowSectorDropdown((v) => !v)}
+                  className="flex items-center gap-0.5 text-xs font-medium text-[#1F7A68] hover:text-[#196658] px-1.5 py-0.5 rounded hover:bg-[#E8F5EE] transition-colors"
+                >
+                  {t("insights.changeSector")}
+                  <ChevronDown
+                    size={11}
+                    style={{
+                      transform: showSectorDropdown ? "rotate(180deg)" : "rotate(0deg)",
+                      transition: "transform 200ms",
+                    }}
+                  />
+                </button>
+                {showSectorDropdown && (
+                  <div
+                    className="absolute left-0 top-full mt-1.5 w-52 bg-white rounded-xl border border-border shadow-lg overflow-hidden z-40"
+                    style={{ animation: "dropIn 180ms ease both" }}
+                  >
+                    {(Object.keys(SECTOR_DATA) as SectorKey[]).map((key) => (
+                      <button
+                        key={key}
+                        onClick={() => {
+                          setSector(key);
+                          setShowSectorDropdown(false);
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-[#F0F3F6] transition-colors text-left"
+                      >
+                        <span className="text-base">{SECTOR_DATA[key].emoji}</span>
+                        <span className="text-sm text-foreground flex-1">{t(SECTOR_DATA[key].sectorKey)}</span>
+                        {key === sector && <CheckCircle2 size={13} className="text-[#1F7A68] shrink-0" />}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <Users2 size={13} />
-          {t("insights.sampleSize")} <span className="font-medium text-foreground" style={{ fontFamily: "var(--font-mono)" }}>214</span> {t("insights.smesCount")}
+          {t("insights.sampleSize")} <span className="font-medium text-foreground" style={{ fontFamily: "var(--font-mono)" }}>{currentSector.sampleSize}</span> {t("insights.smesCount")}
         </div>
       </div>
 
@@ -114,12 +227,12 @@ export function IndustryInsightsScreen({ onBack }: { onBack: () => void }) {
           <span className="w-2.5 h-2.5 rounded-full bg-[#B4B2A9]" />
           <span className="text-xs text-muted-foreground">{t("insights.sectorAvg")}</span>
         </div>
-        <span className="text-xs text-muted-foreground ml-auto">{t("insights.compareValue")}</span>
+        <span className="text-xs text-muted-foreground ml-auto">{t(currentSector.compareValueKey)}</span>
       </div>
 
       {/* Benchmark cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        {BENCHMARKS.map(({ labelKey, you, sectorAvg, unit, color, bg }) => {
+        {currentSector.metrics.map(({ labelKey, you, sectorAvg, unit, color, bg }) => {
           const diff = you - sectorAvg;
           const pctDiff = Math.abs(Math.round((diff / sectorAvg) * 100));
           const isAbove = diff > 0;
@@ -148,7 +261,7 @@ export function IndustryInsightsScreen({ onBack }: { onBack: () => void }) {
           <Lightbulb size={15} className="text-[#633806]" />
           <h2 className="text-sm font-semibold text-foreground">{t("insights.practicesTitle")}</h2>
         </div>
-        <p className="text-xs text-muted-foreground mb-4">{t("insights.practicesSubtitle")}</p>
+        <p className="text-xs text-muted-foreground mb-4">{t(currentSector.practicesSubtitleKey)}</p>
 
         <div className="space-y-3">
           {PRACTICES.map(({ titleKey, bodyKey, icon }) => (

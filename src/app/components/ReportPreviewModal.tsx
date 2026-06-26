@@ -43,14 +43,12 @@ export function ReportPreviewModal({ tier, onClose }: ReportPreviewModalProps) {
       ? "report.footer.medium"
       : "report.footer";
 
-  // Slightly longer generation time for richer tiers, to feel proportionate
-  const genTime = isHigh ? 2200 : isMedium ? 1800 : 1500;
-
   useEffect(() => {
+    const time = tier === "dash.export.high" ? 2200 : tier === "dash.export.medium" ? 1800 : 1500;
     setStage("generating");
-    const timer = setTimeout(() => setStage("ready"), genTime);
+    const timer = setTimeout(() => setStage("ready"), time);
     return () => clearTimeout(timer);
-  }, [tier, genTime]);
+  }, [tier]);
 
   return (
     <div
@@ -82,7 +80,19 @@ export function ReportPreviewModal({ tier, onClose }: ReportPreviewModalProps) {
                   <FileText size={15} className="text-white" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-white leading-tight">{t(titleKey)}</p>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-semibold text-white leading-tight">{t(titleKey)}</p>
+                    <span
+                      className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+                      style={{
+                        backgroundColor: isHigh ? "#F5A623" : isMedium ? "#2E6EA6" : "rgba(255,255,255,0.15)",
+                        color: "white",
+                        letterSpacing: "0.05em",
+                      }}
+                    >
+                      {isHigh ? "PRO" : isMedium ? "STARTER" : "FREE"}
+                    </span>
+                  </div>
                   <p className="text-xs leading-tight" style={{ color: "#9FE1CB" }}>
                     {t("report.previewPeriod")}
                   </p>
