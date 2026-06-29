@@ -22,6 +22,8 @@ import {
   Plus,
   ArrowUp,
   ArrowDown,
+  AlertCircle,
+  ChevronRight,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -31,6 +33,9 @@ import {
   YAxis,
   Tooltip,
   CartesianGrid,
+  PieChart,
+  Pie,
+  Cell,
 } from "recharts";
 import { ProgressScreen } from "./components/ProgressScreen";
 import { PrivacyConsentScreen } from "./components/PrivacyConsentScreen";
@@ -66,6 +71,13 @@ const NAV_ITEMS: Array<{ icon: React.ElementType; labelKey: string; screen: Scre
   { icon: ShieldCheck, labelKey: "nav.privacyConsent", screen: "privacy-consent" },
 ];
 
+const IMPACT_SCORE = 78;
+const CONSENT_ISSUES = 1;
+const SCORE_DATA = [
+  { value: IMPACT_SCORE, color: "#1F7A68" },
+  { value: 100 - IMPACT_SCORE, color: "#E4EBF2" },
+];
+
 const METRICS = [
   {
     icon: Users,
@@ -73,6 +85,9 @@ const METRICS = [
     value: "2,184",
     trendPct: 12,
     trendUp: true,
+    target: "3,000",
+    targetPct: 73,
+    hexColor: "#1B5E38",
     iconColor: "text-[#1B5E38]",
     iconBg: "bg-[#C2E8D4]",
     cardBg: "bg-[#E8F5EE]",
@@ -87,6 +102,9 @@ const METRICS = [
     trendPct: 8,
     trendUp: true,
     showAdd: true,
+    target: "400",
+    targetPct: 78,
+    hexColor: "#1A3A6B",
     iconColor: "text-[#1A3A6B]",
     iconBg: "bg-[#C5D9F5]",
     cardBg: "bg-[#EBF3FB]",
@@ -424,9 +442,73 @@ function DashboardScreen({
         </div>
       </div>
 
-      {/* Metric cards — 3 columns with trend indicators */}
+      {/* Compliance flag */}
+      {CONSENT_ISSUES > 0 ? (
+        <button
+          onClick={() => onNavigate("nav.privacyConsent", "privacy-consent")}
+          className="w-full flex items-center gap-2.5 px-4 py-3 rounded-xl border border-[#F5A623]/40 bg-[#FAEEDA] hover:bg-[#F5E4C2] transition-colors text-left"
+        >
+          <AlertCircle size={14} className="text-[#633806] shrink-0" />
+          <p className="flex-1 text-sm text-[#633806]">
+            <span className="font-semibold">{CONSENT_ISSUES}</span>{" "}
+            {t("dash.consent.flag")}
+          </p>
+          <ChevronRight size={14} className="text-[#633806]/60 shrink-0" />
+        </button>
+      ) : (
+        <div className="flex items-center gap-2.5 px-4 py-3 rounded-xl border border-[#1B5E38]/20 bg-[#E8F5EE]">
+          <CheckCircle2 size={14} className="text-[#1B5E38] shrink-0" />
+          <p className="text-sm text-[#1B5E38]">{t("dash.consent.ok")}</p>
+        </div>
+      )}
+
+      {/* Impact Score card */}
+      <div className="bg-white rounded-xl border border-border p-5 flex items-center gap-6">
+        <div className="relative shrink-0" style={{ width: 120, height: 120 }}>
+          <PieChart width={120} height={120}>
+            <Pie
+              data={SCORE_DATA}
+              cx="50%"
+              cy="50%"
+              innerRadius={40}
+              outerRadius={54}
+              startAngle={90}
+              endAngle={-270}
+              dataKey="value"
+              strokeWidth={0}
+            >
+              {SCORE_DATA.map((entry, i) => (
+                <Cell key={i} fill={entry.color} />
+              ))}
+            </Pie>
+          </PieChart>
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+            <span className="text-2xl font-bold text-[#1B5E38]" style={{ fontFamily: "var(--font-mono)", lineHeight: 1 }}>
+              {IMPACT_SCORE}
+            </span>
+            <span className="text-xs text-muted-foreground mt-0.5">{t("dash.score.outOf")}</span>
+          </div>
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <h2 className="text-sm font-bold text-foreground tracking-tight">{t("dash.score.title")}</h2>
+            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#E8F5EE] text-[#1B5E38]">
+              {t("dash.score.period")}
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground leading-relaxed">{t("dash.score.subtitle")}</p>
+          <div className="mt-3 w-full h-2 bg-[#E4EBF2] rounded-full overflow-hidden">
+            <div
+              className="h-full rounded-full bg-[#1F7A68] transition-all duration-700"
+              style={{ width: `${IMPACT_SCORE}%` }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Metric cards — 3 columns with trend indicators and goal targets */}
       <div className="grid grid-cols-3 gap-4">
-        {METRICS.map(({ icon: Icon, labelKey, value, trendPct, trendUp, showAdd, iconColor, iconBg, cardBg, valueColor, labelColor, trendColor }) => (
+        {METRICS.map(({ icon: Icon, labelKey, value, trendPct, trendUp, showAdd, target, targetPct, hexColor, iconColor, iconBg, cardBg, valueColor, labelColor, trendColor }) => (
           <div
             key={labelKey}
             className={`${cardBg} rounded-xl border border-transparent p-4 hover:shadow-sm transition-shadow`}
@@ -456,6 +538,24 @@ function DashboardScreen({
               {trendUp ? <ArrowUp size={11} /> : <ArrowDown size={11} />}
               <span>{trendPct}% {t("dash.trend.label")}</span>
             </div>
+            {target && targetPct !== undefined && hexColor && (
+              <div className="mt-2.5 pt-2 border-t border-black/[0.07]">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="text-xs opacity-60" style={{ color: hexColor }}>
+                    {value} {t("dash.metric.of")} {target} {t("dash.metric.target")}
+                  </span>
+                  <span className="text-xs font-bold" style={{ color: hexColor, fontFamily: "var(--font-mono)" }}>
+                    {targetPct}%
+                  </span>
+                </div>
+                <div className="w-full h-1.5 rounded-full bg-black/10">
+                  <div
+                    className="h-full rounded-full transition-all duration-700"
+                    style={{ width: `${targetPct}%`, backgroundColor: hexColor }}
+                  />
+                </div>
+              </div>
+            )}
           </div>
         ))}
       </div>
