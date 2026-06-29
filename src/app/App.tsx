@@ -10,7 +10,6 @@ import {
   Users,
   Activity,
   ThumbsUp,
-  Lock,
   CheckCircle2,
   ChevronDown,
   Quote,
@@ -20,7 +19,19 @@ import {
   Zap,
   Sparkles,
   BarChart3,
+  Plus,
+  ArrowUp,
+  ArrowDown,
 } from "lucide-react";
+import {
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from "recharts";
 import { ProgressScreen } from "./components/ProgressScreen";
 import { PrivacyConsentScreen } from "./components/PrivacyConsentScreen";
 import { IndustryForm } from "./components/IndustryForm";
@@ -60,7 +71,8 @@ const METRICS = [
     icon: Users,
     labelKey: "metric.peopleReached",
     value: "2,184",
-    trendKey: "metric.peopleReached.trend",
+    trendPct: 12,
+    trendUp: true,
     iconColor: "text-[#1B5E38]",
     iconBg: "bg-[#C2E8D4]",
     cardBg: "bg-[#E8F5EE]",
@@ -72,7 +84,9 @@ const METRICS = [
     icon: Activity,
     labelKey: "metric.activitiesLogged",
     value: "312",
-    trendKey: "metric.activitiesLogged.trend",
+    trendPct: 8,
+    trendUp: true,
+    showAdd: true,
     iconColor: "text-[#1A3A6B]",
     iconBg: "bg-[#C5D9F5]",
     cardBg: "bg-[#EBF3FB]",
@@ -84,25 +98,14 @@ const METRICS = [
     icon: ThumbsUp,
     labelKey: "metric.feedbackResponses",
     value: "148",
-    trendKey: "metric.feedbackResponses.trend",
+    trendPct: 5,
+    trendUp: true,
     iconColor: "text-[#633806]",
     iconBg: "bg-[#F5D9A8]",
     cardBg: "bg-[#FAEEDA]",
     valueColor: "text-[#633806]",
     labelColor: "text-[#633806]",
     trendColor: "text-[#8B5015]",
-  },
-  {
-    icon: Lock,
-    labelKey: "metric.consentOnFile",
-    value: "100%",
-    trendKey: "metric.consentOnFile.trend",
-    iconColor: "text-[#1B5E38]",
-    iconBg: "bg-[#C2E8D4]",
-    cardBg: "bg-[#E8F5EE]",
-    valueColor: "text-[#1B5E38]",
-    labelColor: "text-[#1B5E38]",
-    trendColor: "text-[#3A8A5E]",
   },
 ];
 
@@ -111,6 +114,17 @@ const PROGRESS_ITEMS = [
   { labelKey: "progressItem.jobConfidence", before: 35, after: 68, unitKey: "progressItem.jobConfidence.unit" },
   { labelKey: "progressItem.monthlyIncome", before: 42, after: 79, unitKey: "progressItem.monthlyIncome.unit" },
 ];
+
+const MONTHLY_TREND = [
+  { month: "Jan", people: 320, activities: 38 },
+  { month: "Feb", people: 410, activities: 45 },
+  { month: "Mar", people: 580, activities: 62 },
+  { month: "Apr", people: 720, activities: 71 },
+  { month: "May", people: 980, activities: 88 },
+  { month: "Jun", people: 1240, activities: 104 },
+];
+
+const BEST_ACTIVITY = { pct: 71 };
 
 const FEEDBACK_QUOTES = [
   {
@@ -410,15 +424,26 @@ function DashboardScreen({
         </div>
       </div>
 
-      {/* Metric cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {METRICS.map(({ icon: Icon, labelKey, value, trendKey, iconColor, iconBg, cardBg, valueColor, labelColor, trendColor }) => (
+      {/* Metric cards — 3 columns with trend indicators */}
+      <div className="grid grid-cols-3 gap-4">
+        {METRICS.map(({ icon: Icon, labelKey, value, trendPct, trendUp, showAdd, iconColor, iconBg, cardBg, valueColor, labelColor, trendColor }) => (
           <div
             key={labelKey}
             className={`${cardBg} rounded-xl border border-transparent p-4 hover:shadow-sm transition-shadow`}
           >
-            <div className={`w-9 h-9 rounded-lg ${iconBg} flex items-center justify-center mb-3`}>
-              <Icon size={17} className={iconColor} />
+            <div className="flex items-start justify-between mb-3">
+              <div className={`w-9 h-9 rounded-lg ${iconBg} flex items-center justify-center`}>
+                <Icon size={17} className={iconColor} />
+              </div>
+              {showAdd && (
+                <button
+                  onClick={() => onNavigate("nav.logActivity", "log-activity")}
+                  className="w-7 h-7 rounded-lg bg-[#1F7A68] flex items-center justify-center hover:bg-[#196658] transition-colors"
+                  title={t("dash.addActivity")}
+                >
+                  <Plus size={14} className="text-white" />
+                </button>
+              )}
             </div>
             <p
               className={`text-2xl font-bold ${valueColor} tracking-tight`}
@@ -427,150 +452,77 @@ function DashboardScreen({
               {value}
             </p>
             <p className={`text-xs font-medium ${labelColor} mt-0.5`}>{t(labelKey)}</p>
-            <p className={`text-xs ${trendColor} mt-1`}>{t(trendKey)}</p>
+            <div className={`flex items-center gap-0.5 mt-1.5 text-xs font-medium ${trendColor}`}>
+              {trendUp ? <ArrowUp size={11} /> : <ArrowDown size={11} />}
+              <span>{trendPct}% {t("dash.trend.label")}</span>
+            </div>
           </div>
         ))}
       </div>
 
-      {/* Mid row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Log activity card — industry form */}
+      {/* Mid row: Trend chart | Best performing activity */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-6">
+        {/* 6-month area chart */}
         <div className="bg-white rounded-xl border border-border p-5">
-          <div className="flex items-center gap-2 mb-1">
-            <h2 className="text-sm font-semibold text-foreground">
-              {t("dash.logCard.title")}
-            </h2>
-            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#FAEEDA] text-[#633806]">
-              {t("dash.logCard.badge")}
+          <h2 className="text-sm font-semibold text-foreground mb-0.5">{t("dash.chart.title")}</h2>
+          <p className="text-xs text-muted-foreground mb-4">{t("dash.chart.subtitle")}</p>
+          <ResponsiveContainer width="100%" height={120}>
+            <AreaChart data={MONTHLY_TREND} margin={{ top: 4, right: 8, bottom: 0, left: -24 }}>
+              <defs>
+                <linearGradient id="gradPeople" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#1F7A68" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="#1F7A68" stopOpacity={0} />
+                </linearGradient>
+                <linearGradient id="gradActivities" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#1A3A6B" stopOpacity={0.2} />
+                  <stop offset="95%" stopColor="#1A3A6B" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="#E4EBF2" vertical={false} />
+              <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#5C7389" }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fontSize: 11, fill: "#5C7389" }} axisLine={false} tickLine={false} />
+              <Tooltip
+                contentStyle={{ fontSize: 11, borderRadius: 8, border: "1px solid #E4EBF2" }}
+                labelStyle={{ fontWeight: 600 }}
+              />
+              <Area type="monotone" dataKey="people" stroke="#1F7A68" strokeWidth={2} fill="url(#gradPeople)" name={t("metric.peopleReached")} />
+              <Area type="monotone" dataKey="activities" stroke="#1A3A6B" strokeWidth={2} fill="url(#gradActivities)" name={t("metric.activitiesLogged")} />
+            </AreaChart>
+          </ResponsiveContainer>
+          <div className="flex items-center gap-4 mt-3">
+            <div className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#1F7A68]" />
+              <span className="text-xs text-muted-foreground">{t("metric.peopleReached")}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-[#1A3A6B]" />
+              <span className="text-xs text-muted-foreground">{t("metric.activitiesLogged")}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Best performing activity */}
+        <div className="bg-white rounded-xl border border-border p-5">
+          <div className="flex items-center gap-2 mb-0.5">
+            <h2 className="text-sm font-semibold text-foreground">{t("dash.bestActivity.title")}</h2>
+          </div>
+          <p className="text-xs text-muted-foreground mb-5">{t("dash.bestActivity.period")}</p>
+          <div className="flex items-center gap-3 p-4 rounded-xl bg-[#E8F5EE] border border-[#1B5E38]/10 mb-4">
+            <div className="w-10 h-10 rounded-lg bg-[#1F7A68] flex items-center justify-center flex-shrink-0">
+              <TrendingUp size={18} className="text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-[#1B5E38]">{t("dash.bestActivity.type")}</p>
+              <p className="text-xs text-[#3A8A5E] mt-0.5">{t("dash.bestActivity.stat")}</p>
+            </div>
+            <span
+              className="text-2xl font-bold text-[#1B5E38] shrink-0"
+              style={{ fontFamily: "var(--font-mono)" }}
+            >
+              {BEST_ACTIVITY.pct}%
             </span>
           </div>
-          <p className="text-xs text-muted-foreground mb-4">
-            {t("dash.logCard.desc")}
-          </p>
-          <IndustryForm compact />
-        </div>
-
-        {/* Before/After progress */}
-        <div className="bg-white rounded-xl border border-border p-5">
-          <div className="flex items-center justify-between mb-1">
-            <h2 className="text-sm font-semibold text-foreground">{t("dash.progressCard.title")}</h2>
-            <button
-              onClick={() => onNavigate("nav.progress", "progress")}
-              className="text-xs text-[#1F7A68] font-medium hover:underline"
-            >
-              {t("dash.progressCard.viewTrends")}
-            </button>
-          </div>
-          <p className="text-xs text-muted-foreground mb-5">
-            {t("dash.progressCard.desc")}
-          </p>
-          <div className="space-y-5">
-            {PROGRESS_ITEMS.map(({ labelKey, before, after, unitKey }) => (
-              <div key={labelKey}>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-foreground">{t(labelKey)}</span>
-                  <span className="text-xs text-muted-foreground">{t(unitKey)}</span>
-                </div>
-                <div className="space-y-1.5">
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs text-muted-foreground w-12 text-right">{t("progress.before")}</span>
-                    <div className="flex-1">
-                      <ProgressBar value={before} color="bg-[#CBD5E1]" />
-                    </div>
-                    <span
-                      className="text-xs font-medium text-muted-foreground w-8"
-                      style={{ fontFamily: "var(--font-mono)" }}
-                    >
-                      {before}%
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs text-muted-foreground w-12 text-right">{t("progress.after")}</span>
-                    <div className="flex-1">
-                      <ProgressBar value={after} color="bg-[#1F7A68]" />
-                    </div>
-                    <span
-                      className="text-xs font-medium text-[#1F7A68] w-8"
-                      style={{ fontFamily: "var(--font-mono)" }}
-                    >
-                      {after}%
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Bottom row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-6">
-        {/* Stakeholder feedback */}
-        <div className="bg-white rounded-xl border border-border p-5">
-          <div className="flex items-center justify-between mb-1">
-            <h2 className="text-sm font-semibold text-foreground">{t("dash.feedbackCard.title")}</h2>
-            <button
-              onClick={() => onNavigate("nav.stakeholderFeedback", "stakeholder-feedback")}
-              className="text-xs text-[#1F7A68] font-medium hover:underline"
-            >
-              {t("dash.feedbackCard.viewAll")}
-            </button>
-          </div>
-          <p className="text-xs text-muted-foreground mb-4">{t("dash.feedbackCard.desc")}</p>
-          <div className="space-y-4">
-            {FEEDBACK_QUOTES.slice(0, 2).map(({ roleKey, name, textKey, avatar, avatarColor }) => (
-              <div key={name} className="flex gap-3 p-3 rounded-lg bg-[#F8FAFB] border border-border">
-                <div className={`w-9 h-9 rounded-full ${avatarColor} flex items-center justify-center flex-shrink-0 text-xs font-semibold`}>
-                  {avatar}
-                </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-semibold text-foreground">{name}</span>
-                    <span className="text-xs text-muted-foreground bg-[#E4EBF2] px-1.5 py-0.5 rounded">{t(roleKey)}</span>
-                  </div>
-                  <div className="flex gap-1.5">
-                    <Quote size={11} className="text-muted-foreground flex-shrink-0 mt-0.5" />
-                    <p className="text-xs text-muted-foreground leading-relaxed">{t(textKey)}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Connected sources */}
-        <div className="bg-white rounded-xl border border-border p-5">
-          <div className="flex items-center justify-between mb-1">
-            <h2 className="text-sm font-semibold text-foreground">{t("dash.sourcesCard.title")}</h2>
-            <button
-              onClick={() => onNavigate("nav.integrations", "integrations")}
-              className="text-xs text-[#1F7A68] font-medium hover:underline"
-            >
-              {t("dash.sourcesCard.manage")}
-            </button>
-          </div>
-          <p className="text-xs text-muted-foreground mb-4">{t("dash.sourcesCard.desc")}</p>
-          <div className="space-y-3">
-            {CONNECTED_SOURCES.map(({ nameKey, descKey, statusKey, icon, statusColor }) => (
-              <div key={nameKey} className="flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-[#F8FAFB] transition-colors">
-                <div className="w-9 h-9 rounded-lg bg-[#F0F3F6] flex items-center justify-center flex-shrink-0 text-lg">
-                  {icon}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground">{t(nameKey)}</p>
-                  <p className="text-xs text-muted-foreground truncate">{t(descKey)}</p>
-                </div>
-                <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${statusColor}`}>
-                  {t(statusKey)}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 p-3 rounded-lg bg-[#EBF3FA] border border-[#2E6EA6]/20">
-            <p className="text-xs text-[#2E6EA6] font-medium">
-              {t("dash.sourcesCard.privacyNote")}
-            </p>
-          </div>
+          <p className="text-xs text-muted-foreground">{t("dash.bestActivity.desc")}</p>
         </div>
       </div>
     </div>
@@ -652,6 +604,16 @@ function LogActivityScreen({
 
 function StakeholderFeedbackScreen({ onBack }: { onBack: () => void }) {
   const { t } = useI18n();
+  const [reflectionText, setReflectionText] = useState("");
+  const [founderNotes, setFounderNotes] = useState<string[]>([]);
+
+  function handleSubmitReflection() {
+    const trimmed = reflectionText.trim();
+    if (!trimmed) return;
+    setFounderNotes((prev) => [trimmed, ...prev]);
+    setReflectionText("");
+  }
+
   return (
     <div className="max-w-3xl mx-auto px-6 py-6">
       <button
@@ -688,6 +650,46 @@ function StakeholderFeedbackScreen({ onBack }: { onBack: () => void }) {
           </div>
         ))}
       </div>
+
+      {/* Founder reflection input */}
+      <div className="bg-[#E8F5EE] rounded-xl border border-[#1B5E38]/15 p-5 mb-6">
+        <h2 className="text-sm font-semibold text-[#1B5E38] mb-0.5">{t("feedback.addReflection")}</h2>
+        <p className="text-xs text-[#3A8A5E] mb-3">{t("feedback.reflectionDesc")}</p>
+        <textarea
+          value={reflectionText}
+          onChange={(e) => setReflectionText(e.target.value)}
+          placeholder={t("feedback.reflectionPlaceholder")}
+          rows={3}
+          className="w-full bg-white border border-[#1B5E38]/20 text-foreground text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-[#1F7A68]/30 focus:border-[#1F7A68] resize-none mb-3"
+        />
+        <button
+          onClick={handleSubmitReflection}
+          disabled={!reflectionText.trim()}
+          className="text-sm font-medium px-4 py-2 rounded-lg bg-[#1F7A68] text-white hover:bg-[#196658] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+        >
+          {t("feedback.submit")}
+        </button>
+      </div>
+
+      {/* Founder notes */}
+      {founderNotes.length > 0 && (
+        <div className="space-y-3 mb-6">
+          {founderNotes.map((note, i) => (
+            <div key={i} className="bg-[#0F2E26] rounded-xl p-4 flex gap-3">
+              <div className="w-8 h-8 rounded-full bg-[#1B5E38] flex items-center justify-center flex-shrink-0 text-xs font-semibold text-white">
+                NR
+              </div>
+              <div>
+                <div className="flex items-center gap-2 mb-1.5">
+                  <span className="text-xs font-semibold text-white">{t("user.name")}</span>
+                  <span className="text-xs px-1.5 py-0.5 rounded bg-[#1B5E38] text-[#9FE1CB] font-medium">{t("feedback.founderNote")}</span>
+                </div>
+                <p className="text-xs text-[#9FE1CB] leading-relaxed">{note}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="grid grid-cols-1 gap-4 pb-6">
         {FEEDBACK_QUOTES.map(({ roleKey, name, date, textKey, avatar, avatarColor, rating }) => (

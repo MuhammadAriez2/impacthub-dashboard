@@ -1,5 +1,17 @@
 import { useState, useEffect } from "react";
 import { X, Download, FileText, Sparkles, Quote } from "lucide-react";
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 import { useI18n } from "../i18n";
 
 const METRICS = [
@@ -7,6 +19,19 @@ const METRICS = [
   { labelKey: "metric.activitiesLogged", value: "312", color: "#1A3A6B", bg: "#EBF3FB" },
   { labelKey: "metric.feedbackResponses", value: "148", color: "#633806", bg: "#FAEEDA" },
   { labelKey: "metric.consentOnFile", value: "100%", color: "#1B5E38", bg: "#E8F5EE" },
+];
+
+const OUTCOMES_DATA = [
+  { metric: "Digital Lit.", before: 28, after: 71 },
+  { metric: "Job Search", before: 35, after: 68 },
+  { metric: "Income", before: 42, after: 79 },
+];
+
+const ACTIVITY_PIE_DATA = [
+  { name: "Training & Skills", value: 45, color: "#1F7A68" },
+  { name: "Mentorship", value: 25, color: "#1A3A6B" },
+  { name: "Community Events", value: 20, color: "#F5A623" },
+  { name: "Other", value: 10, color: "#B4B2A9" },
 ];
 
 const FEEDBACK_SNIPPETS = [
@@ -172,7 +197,7 @@ export function ReportPreviewModal({ tier, onClose }: ReportPreviewModalProps) {
                 </div>
               )}
 
-              {/* High only: full narrative + SDG alignment */}
+              {/* High only: full narrative + visual summary + SDG alignment */}
               {isHigh && (
                 <>
                   <div className="mb-5">
@@ -182,6 +207,93 @@ export function ReportPreviewModal({ tier, onClose }: ReportPreviewModalProps) {
                     <p className="text-sm text-foreground leading-relaxed">
                       {t("report.section.narrative.body")}
                     </p>
+                  </div>
+
+                  {/* Visual Summary — before/after bar chart + activity donut */}
+                  <div className="mb-5">
+                    <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-3">
+                      {t("report.section.visualSummary")}
+                    </h3>
+
+                    <p className="text-xs font-medium text-foreground mb-2">{t("report.chart.outcomes")}</p>
+                    <ResponsiveContainer width="100%" height={190}>
+                      <BarChart
+                        data={OUTCOMES_DATA}
+                        margin={{ top: 4, right: 8, bottom: 0, left: -20 }}
+                        barSize={14}
+                        barCategoryGap="35%"
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#E4EBF2" vertical={false} />
+                        <XAxis
+                          dataKey="metric"
+                          tick={{ fontSize: 10, fill: "#5C7389" }}
+                          axisLine={false}
+                          tickLine={false}
+                        />
+                        <YAxis
+                          tick={{ fontSize: 10, fill: "#5C7389" }}
+                          axisLine={false}
+                          tickLine={false}
+                          unit="%"
+                          domain={[0, 100]}
+                        />
+                        <Tooltip
+                          contentStyle={{ fontSize: 11, borderRadius: 8, border: "1px solid #E4EBF2" }}
+                          formatter={(value: number, name: string) => [`${value}%`, name]}
+                        />
+                        <Bar dataKey="before" name={t("progress.before")} fill="#B4B2A9" radius={[3, 3, 0, 0]} />
+                        <Bar dataKey="after" name={t("progress.after")} fill="#1F7A68" radius={[3, 3, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                    <div className="flex items-center gap-4 mt-1 mb-4 px-1">
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-sm bg-[#B4B2A9]" />
+                        <span className="text-xs text-muted-foreground">{t("progress.before")}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-sm bg-[#1F7A68]" />
+                        <span className="text-xs text-muted-foreground">{t("progress.after")}</span>
+                      </div>
+                    </div>
+
+                    <p className="text-xs font-medium text-foreground mb-2">{t("report.chart.activities")}</p>
+                    <div className="flex items-center gap-3">
+                      <PieChart width={130} height={130}>
+                        <Pie
+                          data={ACTIVITY_PIE_DATA}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={38}
+                          outerRadius={58}
+                          dataKey="value"
+                          strokeWidth={0}
+                        >
+                          {ACTIVITY_PIE_DATA.map((entry, i) => (
+                            <Cell key={i} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip
+                          contentStyle={{ fontSize: 11, borderRadius: 8, border: "1px solid #E4EBF2" }}
+                          formatter={(value: number) => [`${value}%`, ""]}
+                        />
+                      </PieChart>
+                      <div className="flex flex-col gap-2 flex-1">
+                        {ACTIVITY_PIE_DATA.map(({ name, value, color }) => (
+                          <div key={name} className="flex items-center justify-between">
+                            <div className="flex items-center gap-1.5">
+                              <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: color }} />
+                              <span className="text-xs text-muted-foreground leading-tight">{name}</span>
+                            </div>
+                            <span
+                              className="text-xs font-semibold ml-2 shrink-0"
+                              style={{ color, fontFamily: "var(--font-mono)" }}
+                            >
+                              {value}%
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
 
                   <div className="mb-2">
