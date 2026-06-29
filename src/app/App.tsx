@@ -24,6 +24,7 @@ import {
   ArrowDown,
   AlertCircle,
   ChevronRight,
+  Banknote,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -44,6 +45,7 @@ import { LanguageSwitcher } from "./components/LanguageSwitcher";
 import { DataCleaningDemo } from "./components/DataCleaningDemo";
 import { ReportPreviewModal } from "./components/ReportPreviewModal";
 import { IndustryInsightsScreen } from "./components/IndustryInsightsScreen";
+import { PROJECTS } from "./data/projects";
 import { I18nProvider, useI18n } from "./i18n";
 import impactHubLogo from "figma:asset/impacthub-logo.png";
 
@@ -143,6 +145,15 @@ const MONTHLY_TREND = [
 ];
 
 const BEST_ACTIVITY = { pct: 71 };
+
+const REVENUE_SPARKLINE = [
+  { month: "Jan", revenue: 108000 },
+  { month: "Feb", revenue: 124500 },
+  { month: "Mar", revenue: 138000 },
+  { month: "Apr", revenue: 151500 },
+  { month: "May", revenue: 168000 },
+  { month: "Jun", revenue: 184500 },
+];
 
 const FEEDBACK_QUOTES = [
   {
@@ -462,51 +473,96 @@ function DashboardScreen({
         </div>
       )}
 
-      {/* Impact Score card */}
-      <div className="bg-white rounded-xl border border-border p-5 flex items-center gap-6">
-        <div className="relative shrink-0" style={{ width: 120, height: 120 }}>
-          <PieChart width={120} height={120}>
-            <Pie
-              data={SCORE_DATA}
-              cx="50%"
-              cy="50%"
-              innerRadius={40}
-              outerRadius={54}
-              startAngle={90}
-              endAngle={-270}
-              dataKey="value"
-              strokeWidth={0}
-            >
-              {SCORE_DATA.map((entry, i) => (
-                <Cell key={i} fill={entry.color} />
-              ))}
-            </Pie>
-          </PieChart>
-          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <span className="text-2xl font-bold text-[#1B5E38]" style={{ fontFamily: "var(--font-mono)", lineHeight: 1 }}>
-              {IMPACT_SCORE}
-            </span>
-            <span className="text-xs text-muted-foreground mt-0.5">{t("dash.score.outOf")}</span>
+      {/* Headline row: Revenue (left) + Impact Score (right) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {/* Revenue headline card */}
+        <div className="bg-white rounded-xl border border-[#1F7A68]/25 p-5 shadow-sm">
+          <div className="flex items-center gap-2.5 mb-3">
+            <div className="w-9 h-9 rounded-lg bg-[#C2E8D4] flex items-center justify-center shrink-0">
+              <Banknote size={17} className="text-[#1F7A68]" />
+            </div>
+            <div>
+              <p className="text-xs font-medium text-muted-foreground">{t("metric.revenue")}</p>
+              <div className="flex items-center gap-0.5 text-xs font-medium text-[#1F7A68] mt-0.5">
+                <ArrowUp size={11} />
+                <span>9% {t("dash.trend.label")}</span>
+              </div>
+            </div>
+          </div>
+          <p className="text-3xl font-bold text-[#1F7A68] tracking-tight" style={{ fontFamily: "var(--font-mono)" }}>
+            RM 184,500
+          </p>
+          <p className="text-[11px] text-muted-foreground mt-3 mb-1">{t("dash.headline.revenueTrend")}</p>
+          <ResponsiveContainer width="100%" height={64}>
+            <AreaChart data={REVENUE_SPARKLINE} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
+              <defs>
+                <linearGradient id="gradRevenue" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#1F7A68" stopOpacity={0.18} />
+                  <stop offset="95%" stopColor="#1F7A68" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <Area type="monotone" dataKey="revenue" stroke="#1F7A68" strokeWidth={1.5} fill="url(#gradRevenue)" dot={false} />
+            </AreaChart>
+          </ResponsiveContainer>
+          <div className="mt-3 pt-3 border-t border-black/[0.07]">
+            <div className="flex justify-between items-center mb-1.5">
+              <span className="text-xs opacity-60" style={{ color: "#1F7A68" }}>
+                RM 184,500 {t("dash.metric.of")} RM 250,000 {t("dash.metric.target")}
+              </span>
+              <span className="text-xs font-bold" style={{ color: "#1F7A68", fontFamily: "var(--font-mono)" }}>74%</span>
+            </div>
+            <div className="w-full h-1.5 rounded-full bg-black/10">
+              <div className="h-full rounded-full transition-all duration-700" style={{ width: "74%", backgroundColor: "#1F7A68" }} />
+            </div>
           </div>
         </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <h2 className="text-sm font-bold text-foreground tracking-tight">{t("dash.score.title")}</h2>
-            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#E8F5EE] text-[#1B5E38]">
-              {t("dash.score.period")}
-            </span>
+
+        {/* Impact Score headline card */}
+        <div className="bg-white rounded-xl border border-border p-5 shadow-sm flex items-center gap-6">
+          <div className="relative shrink-0" style={{ width: 120, height: 120 }}>
+            <PieChart width={120} height={120}>
+              <Pie
+                data={SCORE_DATA}
+                cx="50%"
+                cy="50%"
+                innerRadius={40}
+                outerRadius={54}
+                startAngle={90}
+                endAngle={-270}
+                dataKey="value"
+                strokeWidth={0}
+              >
+                {SCORE_DATA.map((entry, i) => (
+                  <Cell key={i} fill={entry.color} />
+                ))}
+              </Pie>
+            </PieChart>
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <span className="text-2xl font-bold text-[#1B5E38]" style={{ fontFamily: "var(--font-mono)", lineHeight: 1 }}>
+                {IMPACT_SCORE}
+              </span>
+              <span className="text-xs text-muted-foreground mt-0.5">{t("dash.score.outOf")}</span>
+            </div>
           </div>
-          <p className="text-xs text-muted-foreground leading-relaxed">{t("dash.score.subtitle")}</p>
-          <div className="mt-3 w-full h-2 bg-[#E4EBF2] rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full bg-[#1F7A68] transition-all duration-700"
-              style={{ width: `${IMPACT_SCORE}%` }}
-            />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <h2 className="text-sm font-bold text-foreground tracking-tight">{t("dash.score.title")}</h2>
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#E8F5EE] text-[#1B5E38]">
+                {t("dash.score.period")}
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed">{t("dash.score.subtitle")}</p>
+            <div className="mt-3 w-full h-2 bg-[#E4EBF2] rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full bg-[#1F7A68] transition-all duration-700"
+                style={{ width: `${IMPACT_SCORE}%` }}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Metric cards — 3 columns with trend indicators and goal targets */}
+      {/* Regular metric cards — 3 columns */}
       <div className="grid grid-cols-3 gap-4">
         {METRICS.map(({ icon: Icon, labelKey, value, trendPct, trendUp, showAdd, target, targetPct, hexColor, iconColor, iconBg, cardBg, valueColor, labelColor, trendColor }) => (
           <div
@@ -644,8 +700,11 @@ function LogActivityScreen({
   onSuccess: () => void;
 }) {
   const { t } = useI18n();
+  const totalBeneficiaries = PROJECTS.reduce((sum, p) => sum + p.beneficiaries, 0);
+  const activeCount = PROJECTS.filter((p) => p.statusKey === "projects.status.active").length;
+
   return (
-    <div className="max-w-2xl mx-auto px-6 py-6">
+    <div className="max-w-3xl mx-auto px-6 py-6">
       <button
         onClick={onBack}
         className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
@@ -667,6 +726,61 @@ function LogActivityScreen({
           {t("logActivity.subtitle")}
         </p>
       </div>
+
+      {/* ── Your Projects section ── */}
+      <h2 className="text-base font-semibold text-foreground tracking-tight mb-3">
+        {t("logActivity.yourProjects")}
+      </h2>
+
+      {/* Summary stats */}
+      <div className="grid grid-cols-3 gap-3 mb-4">
+        {[
+          { labelKey: "projects.summary.total", value: String(PROJECTS.length), color: "text-[#1B5E38]", bg: "bg-[#E8F5EE]" },
+          { labelKey: "projects.summary.active", value: String(activeCount), color: "text-[#1A3A6B]", bg: "bg-[#EBF3FB]" },
+          { labelKey: "projects.summary.totalBeneficiaries", value: String(totalBeneficiaries), color: "text-[#633806]", bg: "bg-[#FAEEDA]" },
+        ].map(({ labelKey, value, color, bg }) => (
+          <div key={labelKey} className={`${bg} rounded-xl p-3`}>
+            <p className={`text-lg font-bold ${color} tracking-tight`} style={{ fontFamily: "var(--font-mono)" }}>{value}</p>
+            <p className={`text-xs font-medium ${color} mt-0.5`}>{t(labelKey)}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Project cards */}
+      <div className="space-y-3 mb-8">
+        {PROJECTS.map((proj) => (
+          <div key={proj.name} className="bg-white rounded-xl border border-border p-4">
+            <div className="flex items-start gap-3">
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-lg"
+                style={{ backgroundColor: proj.iconBg }}
+              >
+                {proj.icon}
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-start justify-between gap-3 mb-1">
+                  <p className="text-sm font-semibold text-foreground leading-tight">{proj.name}</p>
+                  <span className={`text-xs font-medium px-2.5 py-0.5 rounded-full shrink-0 ${proj.statusColor}`}>
+                    {t(proj.statusKey)}
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed mb-2">{t(proj.descKey)}</p>
+                <div className="flex flex-wrap gap-1.5">
+                  <span className="text-xs text-muted-foreground bg-[#F0F3F6] px-2 py-0.5 rounded-md">{proj.location}</span>
+                  <span className="text-xs text-muted-foreground bg-[#F0F3F6] px-2 py-0.5 rounded-md">{proj.beneficiaries} {t("projects.beneficiaries")}</span>
+                  <span className="text-xs text-muted-foreground bg-[#F0F3F6] px-2 py-0.5 rounded-md">{proj.budget}</span>
+                  <span className="text-xs text-muted-foreground bg-[#F0F3F6] px-2 py-0.5 rounded-md">{t("projects.started")} {proj.startDate}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Log an Activity section ── */}
+      <h2 className="text-base font-semibold text-foreground tracking-tight mb-4">
+        {t("logActivity.formSection")}
+      </h2>
 
       <div className="bg-white rounded-xl border border-border p-6">
         {/* Date row */}
@@ -692,7 +806,7 @@ function LogActivityScreen({
 
       <button
         onClick={onBack}
-        className="mt-3 w-full text-sm font-medium py-2.5 rounded-lg border border-border text-muted-foreground hover:bg-muted transition-colors"
+        className="mt-3 mb-8 w-full text-sm font-medium py-2.5 rounded-lg border border-border text-muted-foreground hover:bg-muted transition-colors"
       >
         {t("common.cancel")}
       </button>

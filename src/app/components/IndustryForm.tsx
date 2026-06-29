@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ChevronDown, Plus, X, CheckCircle2 } from "lucide-react";
 import { useI18n } from "../i18n";
+import { PROJECTS } from "../data/projects";
 
 // ─── Industry templates (keys reference translation dictionary) ───────────────
 
@@ -174,10 +175,13 @@ export function IndustryForm({
   submitLabelKey = "form.submitDefault",
 }: IndustryFormProps) {
   const { t } = useI18n();
+  const [selectedProjectName, setSelectedProjectName] = useState("");
   const [industry, setIndustry] = useState("Education");
   const [values, setValues] = useState<Record<string, string>>({});
   const [customFields, setCustomFields] = useState<Array<{ id: string; label: string; value: string }>>([]);
   const [logSuccess, setLogSuccess] = useState(false);
+
+  const selectedProject = PROJECTS.find((p) => p.name === selectedProjectName) ?? null;
 
   const template = TEMPLATES[industry];
 
@@ -217,6 +221,48 @@ export function IndustryForm({
 
   return (
     <div className="space-y-3">
+      {/* Project selector */}
+      <div>
+        <label className="block text-xs font-medium text-muted-foreground mb-1.5">
+          {t("form.projectLabel")}
+        </label>
+        <div className="relative">
+          <select
+            value={selectedProjectName}
+            onChange={(e) => setSelectedProjectName(e.target.value)}
+            className={inputBase + " appearance-none pr-8 cursor-pointer"}
+          >
+            <option value="">{t("form.projectPlaceholder")}</option>
+            {PROJECTS.map((proj) => (
+              <option key={proj.name} value={proj.name}>
+                {proj.name}
+              </option>
+            ))}
+          </select>
+          <ChevronDown
+            size={14}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+          />
+        </div>
+        {!compact && selectedProject && (
+          <div
+            className="mt-1.5 rounded-lg px-3 py-2 flex flex-wrap items-center gap-x-2 gap-y-0.5"
+            style={{ backgroundColor: selectedProject.iconBg }}
+          >
+            <span className="text-xs font-medium" style={{ color: "inherit" }}>
+              {selectedProject.icon}
+            </span>
+            <span className="text-xs text-muted-foreground">{selectedProject.location}</span>
+            <span className="text-xs text-muted-foreground">·</span>
+            <span className="text-xs text-muted-foreground">{selectedProject.budget}</span>
+            <span className="text-xs text-muted-foreground">·</span>
+            <span className="text-xs text-muted-foreground">
+              {selectedProject.beneficiaries} {t("projects.beneficiaries")}
+            </span>
+          </div>
+        )}
+      </div>
+
       {/* Industry selector */}
       <div>
         <label className="block text-xs font-medium text-muted-foreground mb-1.5">
