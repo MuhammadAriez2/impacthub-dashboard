@@ -30,7 +30,8 @@ const SECTOR_DATA: Record<SectorKey, SectorData> = {
     practicesSubtitleKey: "insights.practicesSubtitle",
     sampleSize: 214,
     metrics: [
-      { labelKey: "insights.metric.peopleReached", you: 728, sectorAvg: 540, unit: "", color: "#1B5E38", bg: "#E8F5EE" },
+      { labelKey: "insights.metric.orgsReached", you: 13, sectorAvg: 9, unit: "", color: "#1B5E38", bg: "#E8F5EE" },
+      { labelKey: "insights.metric.individualsReached", you: 715, sectorAvg: 531, unit: "", color: "#1B5E38", bg: "#E8F5EE" },
       { labelKey: "insights.metric.digitalLiteracy", you: 43, sectorAvg: 31, unit: "pp", color: "#1A3A6B", bg: "#EBF3FB" },
       { labelKey: "insights.metric.jobPlacement", you: 38, sectorAvg: 42, unit: "%", color: "#633806", bg: "#FAEEDA" },
       { labelKey: "insights.metric.consentRate", you: 100, sectorAvg: 87, unit: "%", color: "#1B5E38", bg: "#E8F5EE" },
@@ -43,7 +44,8 @@ const SECTOR_DATA: Record<SectorKey, SectorData> = {
     practicesSubtitleKey: "insights.practicesSubtitle.environment",
     sampleSize: 87,
     metrics: [
-      { labelKey: "insights.metric.peopleReached", you: 312, sectorAvg: 285, unit: "", color: "#1B5E38", bg: "#E8F5EE" },
+      { labelKey: "insights.metric.orgsReached", you: 8, sectorAvg: 6, unit: "", color: "#1B5E38", bg: "#E8F5EE" },
+      { labelKey: "insights.metric.individualsReached", you: 304, sectorAvg: 279, unit: "", color: "#1B5E38", bg: "#E8F5EE" },
       { labelKey: "insights.metric.wastesDiverted", you: 8.4, sectorAvg: 5.1, unit: "t", color: "#1A3A6B", bg: "#EBF3FB" },
       { labelKey: "insights.metric.sdgTagRate", you: 91, sectorAvg: 78, unit: "%", color: "#633806", bg: "#FAEEDA" },
       { labelKey: "insights.metric.consentRate", you: 100, sectorAvg: 84, unit: "%", color: "#1B5E38", bg: "#E8F5EE" },
@@ -56,7 +58,8 @@ const SECTOR_DATA: Record<SectorKey, SectorData> = {
     practicesSubtitleKey: "insights.practicesSubtitle.health",
     sampleSize: 156,
     metrics: [
-      { labelKey: "insights.metric.peopleReached", you: 445, sectorAvg: 390, unit: "", color: "#1B5E38", bg: "#E8F5EE" },
+      { labelKey: "insights.metric.orgsReached", you: 6, sectorAvg: 4, unit: "", color: "#1B5E38", bg: "#E8F5EE" },
+      { labelKey: "insights.metric.individualsReached", you: 439, sectorAvg: 386, unit: "", color: "#1B5E38", bg: "#E8F5EE" },
       { labelKey: "insights.metric.healthScreenings", you: 289, sectorAvg: 220, unit: "", color: "#1A3A6B", bg: "#EBF3FB" },
       { labelKey: "insights.metric.careFollowUp", you: 74, sectorAvg: 58, unit: "%", color: "#633806", bg: "#FAEEDA" },
       { labelKey: "insights.metric.consentRate", you: 100, sectorAvg: 91, unit: "%", color: "#1B5E38", bg: "#E8F5EE" },
@@ -69,7 +72,8 @@ const SECTOR_DATA: Record<SectorKey, SectorData> = {
     practicesSubtitleKey: "insights.practicesSubtitle.community",
     sampleSize: 193,
     metrics: [
-      { labelKey: "insights.metric.peopleReached", you: 563, sectorAvg: 420, unit: "", color: "#1B5E38", bg: "#E8F5EE" },
+      { labelKey: "insights.metric.orgsReached", you: 15, sectorAvg: 11, unit: "", color: "#1B5E38", bg: "#E8F5EE" },
+      { labelKey: "insights.metric.individualsReached", you: 548, sectorAvg: 409, unit: "", color: "#1B5E38", bg: "#E8F5EE" },
       { labelKey: "insights.metric.employmentReadiness", you: 35, sectorAvg: 24, unit: "pp", color: "#1A3A6B", bg: "#EBF3FB" },
       { labelKey: "insights.metric.digitalSkills", you: 67, sectorAvg: 49, unit: "%", color: "#633806", bg: "#FAEEDA" },
       { labelKey: "insights.metric.consentRate", you: 100, sectorAvg: 88, unit: "%", color: "#1B5E38", bg: "#E8F5EE" },
@@ -145,6 +149,7 @@ export function IndustryInsightsScreen({ onBack }: { onBack: () => void }) {
 
       <div className="flex items-start justify-between mb-2">
         <div>
+          <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E8F5EE] text-[#1B5E38] uppercase tracking-wide mb-2">{t("dash.founder.title")}</span>
           <h1 className="text-2xl font-bold text-foreground mb-1" style={{ fontFamily: "var(--font-display)" }}>{t("insights.title")}</h1>
           <p className="text-sm text-muted-foreground max-w-xl">{t("insights.subtitle")}</p>
         </div>

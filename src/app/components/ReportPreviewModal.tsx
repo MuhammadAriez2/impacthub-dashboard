@@ -2,11 +2,8 @@ import { useState, useEffect } from "react";
 import { X, Download, FileText, Sparkles, Quote } from "lucide-react";
 import {
   ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
+  AreaChart,
+  Area,
   Tooltip,
   PieChart,
   Pie,
@@ -15,16 +12,19 @@ import {
 import { useI18n } from "../i18n";
 
 const METRICS = [
-  { labelKey: "metric.peopleReached", value: "2,184", color: "#FFFFFF", bg: "#0F2E26" },
-  { labelKey: "metric.activitiesLogged", value: "312", color: "#FFFFFF", bg: "#1A3A6B" },
-  { labelKey: "metric.feedbackResponses", value: "148", color: "#FFFFFF", bg: "#633806" },
-  { labelKey: "metric.consentOnFile", value: "100%", color: "#FFFFFF", bg: "#1B5E38" },
+  { label: "Total Earnings",     value: "RM 184,500", color: "#FFFFFF", bg: "#1A3A6B" },
+  { label: "Products Sold",      value: "847",        color: "#FFFFFF", bg: "#0F2E26" },
+  { label: "Projects Completed", value: "1 of 3",     color: "#FFFFFF", bg: "#633806" },
+  { label: "Feedback Responses", value: "148",        color: "#FFFFFF", bg: "#1B5E38" },
 ];
 
-const OUTCOMES_DATA = [
-  { metric: "Digital Lit.", before: 28, after: 71 },
-  { metric: "Job Search", before: 35, after: 68 },
-  { metric: "Income", before: 42, after: 79 },
+const PROFIT_SPARKLINE_REPORT = [
+  { month: "Jan", profit: 26000 },
+  { month: "Feb", profit: 33500 },
+  { month: "Mar", profit: 40000 },
+  { month: "Apr", profit: 43500 },
+  { month: "May", profit: 49000 },
+  { month: "Jun", profit: 57500 },
 ];
 
 const ACTIVITY_PIE_DATA = [
@@ -153,13 +153,13 @@ export function ReportPreviewModal({ tier, onClose }: ReportPreviewModalProps) {
                   {t("report.section.metrics")}
                 </h3>
                 <div className="grid grid-cols-2 gap-2.5">
-                  {METRICS.map(({ labelKey, value, color, bg }) => (
-                    <div key={labelKey} className="rounded-lg p-3.5" style={{ backgroundColor: bg }}>
+                  {METRICS.map(({ label, value, color, bg }) => (
+                    <div key={label} className="rounded-lg p-3.5" style={{ backgroundColor: bg }}>
                       <p className="text-2xl font-bold" style={{ color, fontFamily: "var(--font-mono)" }}>
                         {value}
                       </p>
                       <p className="text-xs font-medium mt-0.5" style={{ color: "rgba(255,255,255,0.72)" }}>
-                        {t(labelKey)}
+                        {label}
                       </p>
                     </div>
                   ))}
@@ -216,45 +216,22 @@ export function ReportPreviewModal({ tier, onClose }: ReportPreviewModalProps) {
                       {t("report.section.visualSummary")}
                     </h3>
 
-                    <p className="text-xs font-medium text-foreground mb-2">{t("report.chart.outcomes")}</p>
-                    <ResponsiveContainer width="100%" height={190}>
-                      <BarChart
-                        data={OUTCOMES_DATA}
-                        margin={{ top: 4, right: 8, bottom: 0, left: -20 }}
-                        barSize={14}
-                        barCategoryGap="35%"
-                      >
-                        <CartesianGrid strokeDasharray="3 3" stroke="#E4EBF2" vertical={false} />
-                        <XAxis
-                          dataKey="metric"
-                          tick={{ fontSize: 10, fill: "#5C7389" }}
-                          axisLine={false}
-                          tickLine={false}
-                        />
-                        <YAxis
-                          tick={{ fontSize: 10, fill: "#5C7389" }}
-                          axisLine={false}
-                          tickLine={false}
-                          unit="%"
-                          domain={[0, 100]}
-                        />
-                        <Tooltip
-                          contentStyle={{ fontSize: 11, borderRadius: 8, border: "1px solid #E4EBF2" }}
-                          formatter={(value: number, name: string) => [`${value}%`, name]}
-                        />
-                        <Bar dataKey="before" name={t("progress.before")} fill="#B4B2A9" radius={[3, 3, 0, 0]} />
-                        <Bar dataKey="after" name={t("progress.after")} fill="#1F7A68" radius={[3, 3, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                    <div className="flex items-center gap-4 mt-1 mb-4 px-1">
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-sm bg-[#B4B2A9]" />
-                        <span className="text-xs text-muted-foreground">{t("progress.before")}</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-sm bg-[#1F7A68]" />
-                        <span className="text-xs text-muted-foreground">{t("progress.after")}</span>
-                      </div>
+                    <p className="text-xs font-medium text-foreground mb-2">Net Profit Trend (Jan–Jun 2026)</p>
+                    <div className="rounded-xl p-3 mb-4" style={{ background: "linear-gradient(135deg, #0F2E26 0%, #1A4A38 100%)" }}>
+                      <p className="text-xl font-bold text-white mb-1" style={{ fontFamily: "var(--font-mono)" }}>RM 57,500</p>
+                      <p className="text-[10px] mb-2" style={{ color: "rgba(255,255,255,0.50)" }}>Revenue RM 184,500 · Expenses RM 127,000</p>
+                      <ResponsiveContainer width="100%" height={70}>
+                        <AreaChart data={PROFIT_SPARKLINE_REPORT} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
+                          <defs>
+                            <linearGradient id="gradProfitReport" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="rgba(255,255,255,0.30)" stopOpacity={1} />
+                              <stop offset="95%" stopColor="rgba(255,255,255,0)" stopOpacity={1} />
+                            </linearGradient>
+                          </defs>
+                          <Tooltip contentStyle={{ fontSize: 10, borderRadius: 6, backgroundColor: "#0F2E26", border: "1px solid rgba(255,255,255,0.15)", color: "#fff" }} formatter={(v: number) => [`RM ${v.toLocaleString()}`, "Profit"]} />
+                          <Area type="monotone" dataKey="profit" stroke="rgba(255,255,255,0.80)" strokeWidth={1.5} fill="url(#gradProfitReport)" dot={false} />
+                        </AreaChart>
+                      </ResponsiveContainer>
                     </div>
 
                     <p className="text-xs font-medium text-foreground mb-2">{t("report.chart.activities")}</p>
