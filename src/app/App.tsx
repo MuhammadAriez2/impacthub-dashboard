@@ -279,7 +279,7 @@ function Sidebar({
   return (
     <aside
       className="w-60 flex-shrink-0 flex flex-col h-full"
-      style={{ backgroundColor: "#0F2E26" }}
+      style={{ backgroundColor: "#0F2E26", boxShadow: "3px 0 14px rgba(0,0,0,0.20)" }}
     >
       <div
         className="px-6 py-5 flex items-center gap-2.5"
@@ -303,7 +303,7 @@ function Sidebar({
             <button
               key={labelKey}
               onClick={() => onNavigate(labelKey, screen)}
-              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 text-left"
+              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 text-left active:scale-[0.97]"
               style={
                 isActive
                   ? { backgroundColor: "#1B5E38", color: "#ffffff", borderLeft: "3px solid #4ACED1", paddingLeft: "9px" }
@@ -431,7 +431,7 @@ function DashboardScreen({
           <div className="relative">
             <button
               onClick={() => setShowExport((v) => !v)}
-              className="flex items-center gap-2 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-all"
+              className="flex items-center gap-2 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-all active:scale-[0.97]"
               style={{
                 background: "linear-gradient(135deg, #1F7A68 0%, #0F5748 100%)",
                 boxShadow: "0 4px 14px rgba(31,122,104,0.40), 0 1px 3px rgba(31,122,104,0.25)",
@@ -485,8 +485,8 @@ function DashboardScreen({
 
       {/* Impact Score — full-width synthesis card */}
       <div
-        className="rounded-xl p-5 shadow-md"
-        style={{ background: "linear-gradient(135deg, #0A1F40 0%, #1A3A6B 100%)", border: "1px solid rgba(26,58,107,0.8)" }}
+        className="rounded-xl p-5"
+        style={{ background: "linear-gradient(135deg, #0A1F40 0%, #1A3A6B 100%)", border: "1px solid rgba(26,58,107,0.8)", boxShadow: "0 8px 28px rgba(26,58,107,0.30), 0 2px 8px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.07)" }}
       >
         <div className="flex items-center gap-6">
           <div className="relative shrink-0" style={{ width: 164, height: 164 }}>
@@ -528,9 +528,12 @@ function DashboardScreen({
 
       {/* ═══ SECTION A: FOUNDER VIEW ═══ */}
       <div className="space-y-4">
-        <div className="flex items-end gap-3">
-          <h2 className="text-xl font-bold text-foreground" style={{ fontFamily: "var(--font-display)" }}>{t("dash.founder.title")}</h2>
-          <p className="text-sm text-muted-foreground mb-0.5">{t("dash.founder.subtitle")}</p>
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground mb-1.5" style={{ letterSpacing: "0.12em" }}>Founder View</p>
+          <div className="flex items-end gap-3">
+            <h2 className="text-xl font-bold text-foreground" style={{ fontFamily: "var(--font-display)" }}>{t("dash.founder.title")}</h2>
+            <p className="text-sm text-muted-foreground mb-0.5">{t("dash.founder.subtitle")}</p>
+          </div>
         </div>
 
         {/* Compliance flag */}
@@ -552,13 +555,13 @@ function DashboardScreen({
         {/* Founder summary metrics — 4 cards: Earnings | Products | Projects | Feedback */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {FOUNDER_METRICS.map(({ icon: Icon, label, value, unit, color, iconBg, iconColor, cardBg }) => (
-            <div key={label} className={`${cardBg} rounded-xl border border-transparent p-4`}>
+            <div key={label} className={`${cardBg} rounded-xl border border-black/[0.05] p-4 shadow-sm hover:shadow-md transition-shadow duration-200`}>
               <div className={`w-9 h-9 rounded-lg ${iconBg} flex items-center justify-center mb-3`}>
                 <Icon size={17} className={iconColor} />
               </div>
-              <p className="text-2xl font-bold tracking-tight" style={{ color, fontFamily: "var(--font-mono)" }}>{value}</p>
-              <p className="text-sm font-medium mt-0.5" style={{ color }}>{label}</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">{unit}</p>
+              <p className="text-3xl font-bold tracking-tight leading-none" style={{ color, fontFamily: "var(--font-mono)" }}>{value}</p>
+              <p className="text-sm font-semibold mt-1.5" style={{ color }}>{label}</p>
+              <p className="text-xs text-muted-foreground mt-0.5">{unit}</p>
             </div>
           ))}
         </div>
@@ -576,7 +579,7 @@ function DashboardScreen({
               </div>
             </div>
           </div>
-          <p className="text-3xl font-bold text-white tracking-tight" style={{ fontFamily: "var(--font-mono)" }}>RM 57,500</p>
+          <p className="text-4xl font-bold text-white tracking-tight" style={{ fontFamily: "var(--font-mono)" }}>RM 57,500</p>
           <p className="text-[11px] mt-1" style={{ color: "rgba(255,255,255,0.42)" }}>Net profit = Revenue − Expenses</p>
           <p className="text-[11px] mt-3 mb-1" style={{ color: "rgba(255,255,255,0.50)" }}>6-month revenue vs expenses</p>
           <ResponsiveContainer width="100%" height={80}>
@@ -615,7 +618,7 @@ function DashboardScreen({
         {/* Customers Reached + Beneficiaries Helped — 2-col pie chart cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Customers Reached breakdown */}
-          <div className="bg-white rounded-xl border border-border p-5">
+          <div className="bg-white rounded-xl border border-black/[0.06] shadow-sm hover:shadow-md transition-shadow duration-200 p-5">
             <h2 className="pl-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-0.5" style={{ borderLeft: "3px solid #4ACED1" }}>Customers Reached</h2>
             <p className="text-xs text-muted-foreground mb-3">Reach by engagement type</p>
             <div className="flex justify-center">
@@ -649,11 +652,11 @@ function DashboardScreen({
                 </div>
               ))}
             </div>
-            <p className="text-[10px] text-muted-foreground mt-2 pt-1.5" style={{ borderTop: "1px solid #E4EBF2" }}>Total: 2,184 reached</p>
+            <p className="text-[11px] font-medium text-muted-foreground mt-2 pt-1.5" style={{ borderTop: "1px solid #E4EBF2" }}>Total: 2,184 reached</p>
           </div>
 
           {/* Beneficiaries Helped breakdown */}
-          <div className="bg-white rounded-xl border border-border p-5">
+          <div className="bg-white rounded-xl border border-black/[0.06] shadow-sm hover:shadow-md transition-shadow duration-200 p-5">
             <h2 className="pl-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-0.5" style={{ borderLeft: "3px solid #4ACED1" }}>Beneficiaries Helped</h2>
             <p className="text-xs text-muted-foreground mb-3">By community group</p>
             <div className="flex justify-center">
@@ -692,7 +695,7 @@ function DashboardScreen({
 
         {/* Trend chart + Best performing activity */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bg-white rounded-xl border border-border p-5">
+          <div className="bg-white rounded-xl border border-black/[0.06] shadow-sm hover:shadow-md transition-shadow duration-200 p-5">
             <h2 className="pl-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-0.5" style={{ borderLeft: "3px solid #4ACED1" }}>{t("dash.chart.title")}</h2>
             <p className="text-xs text-muted-foreground mb-4">{t("dash.chart.subtitle")}</p>
             <ResponsiveContainer width="100%" height={120}>
@@ -718,7 +721,7 @@ function DashboardScreen({
               <div className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-[#1A3A6B]" /><span className="text-xs text-muted-foreground">{t("metric.activitiesLogged")}</span></div>
             </div>
           </div>
-          <div className="bg-white rounded-xl border border-border p-5">
+          <div className="bg-white rounded-xl border border-black/[0.06] shadow-sm hover:shadow-md transition-shadow duration-200 p-5">
             <h2 className="pl-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-0.5" style={{ borderLeft: "3px solid #4ACED1" }}>{t("dash.bestActivity.title")}</h2>
             <p className="text-xs text-muted-foreground mb-5">{t("dash.bestActivity.period")}</p>
             <div className="flex items-center gap-3 p-4 rounded-xl bg-[#E8F5EE] border border-[#1B5E38]/10 mb-4">
@@ -737,10 +740,11 @@ function DashboardScreen({
       </div>
 
       {/* ═══ SECTION B: CORPORATE & PARTNER VIEW ═══ */}
-      <div className="rounded-2xl p-5 space-y-5 pb-6" style={{ backgroundColor: "#EAF0FB", border: "1px solid rgba(26,58,107,0.10)" }}>
-        <div>
-          <h2 className="text-xl font-bold text-[#18293A] mb-1" style={{ fontFamily: "var(--font-display)" }}>{t("dash.corporate.title")}</h2>
-          <p className="text-sm text-muted-foreground">{t("dash.corporate.subtitle")}</p>
+      <div className="rounded-2xl p-5 space-y-5 pb-6" style={{ background: "linear-gradient(170deg, #EAF0FB 0%, #EDF5FF 100%)", border: "1px solid rgba(26,58,107,0.12)", boxShadow: "0 2px 16px rgba(26,58,107,0.07), inset 0 1px 0 rgba(255,255,255,0.65)" }}>
+        <div className="pb-3" style={{ borderBottom: "1px solid rgba(26,58,107,0.10)" }}>
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-[#1A3A6B]/50 mb-1.5" style={{ letterSpacing: "0.12em" }}>Corporate &amp; Partner View</p>
+          <h2 className="text-xl font-bold text-[#18293A]" style={{ fontFamily: "var(--font-display)" }}>{t("dash.corporate.title")}</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">{t("dash.corporate.subtitle")}</p>
         </div>
 
         {/* Active Projects — detailed cards per project */}
@@ -753,7 +757,7 @@ function DashboardScreen({
                 { value: 100 - proj.completion, color: "#E4EBF2" },
               ];
               return (
-                <div key={proj.name} className="bg-white rounded-xl p-4 border border-border flex flex-col gap-3">
+                <div key={proj.name} className="bg-white rounded-xl p-4 border border-black/[0.06] shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col gap-3">
                   {/* Header */}
                   <div>
                     <div className="flex items-center justify-between mb-1">
@@ -789,7 +793,7 @@ function DashboardScreen({
                   </div>
                   {/* Beneficiary pie — vertical layout */}
                   <div>
-                    <p className="text-[10px] text-muted-foreground mb-2">Beneficiaries involved</p>
+                    <p className="text-[11px] font-medium text-muted-foreground mb-2">Beneficiaries involved</p>
                     <div className="flex justify-center">
                       <PieChart width={180} height={180}>
                         <Pie
@@ -835,7 +839,7 @@ function DashboardScreen({
             {ESG_SCORES.map(({ label, score, color, bg, textColor }) => {
               const esgData = [{ value: score, color }, { value: 100 - score, color: "#E4EBF2" }];
               return (
-                <div key={label} className="bg-white rounded-xl p-4 border border-border flex flex-col items-center">
+                <div key={label} className="bg-white rounded-xl p-4 border border-black/[0.06] shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col items-center">
                   <div className="relative shrink-0" style={{ width: 144, height: 144 }}>
                     <PieChart width={144} height={144}>
                       <Pie data={esgData} cx="50%" cy="50%" innerRadius={47} outerRadius={64} startAngle={90} endAngle={-270} dataKey="value" strokeWidth={0}>
@@ -848,7 +852,7 @@ function DashboardScreen({
                     </div>
                   </div>
                   <p className="text-sm font-semibold mt-2" style={{ color: textColor }}>{label}</p>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full mt-1" style={{ backgroundColor: bg, color: textColor }}>
+                  <span className="text-[11px] font-medium px-2.5 py-0.5 rounded-full mt-1.5" style={{ backgroundColor: bg, color: textColor }}>
                     {score >= 75 ? "Strong" : score >= 60 ? "Moderate" : "Developing"}
                   </span>
                 </div>
@@ -888,12 +892,12 @@ function DashboardScreen({
               );
             })}
           </div>
-          <p className="text-[10px] text-muted-foreground mt-2">Aligned SDGs: 1, 3, 4, 5, 8, 10 · Source: UN Sustainable Development Goals</p>
+          <p className="text-[11px] text-muted-foreground mt-2">Aligned SDGs: 1, 3, 4, 5, 8, 10 · Source: UN Sustainable Development Goals</p>
         </div>
 
         {/* e + f: Workforce + PDPA — 2-col */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bg-white rounded-xl p-4 border border-border">
+          <div className="bg-white rounded-xl p-4 border border-black/[0.06] shadow-sm">
             <h3 className="pl-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-3" style={{ borderLeft: "3px solid #4ACED1" }}>{t("dash.corp.workforce.title")}</h3>
             <div className="space-y-2.5">
               {WORKFORCE_STATS.map((key) => (
@@ -904,7 +908,7 @@ function DashboardScreen({
               ))}
             </div>
           </div>
-          <div className="bg-white rounded-xl p-4 border border-border">
+          <div className="bg-white rounded-xl p-4 border border-black/[0.06] shadow-sm">
             <h3 className="pl-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-3" style={{ borderLeft: "3px solid #4ACED1" }}>{t("dash.corp.ethics.title")}</h3>
             <div className="flex items-center gap-3 mb-2">
               <div className="flex-1 h-2 bg-[#D8E4F0] rounded-full overflow-hidden">
@@ -988,7 +992,7 @@ function LogActivityScreen({
       {/* Project cards */}
       <div className="space-y-3 mb-8">
         {PROJECTS.map((proj) => (
-          <div key={proj.name} className="bg-white rounded-xl border border-border p-4">
+          <div key={proj.name} className="bg-white rounded-xl border border-black/[0.06] shadow-sm p-4">
             <div className="flex items-start gap-3">
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-lg"
@@ -1146,7 +1150,7 @@ function StakeholderFeedbackScreen({ onBack }: { onBack: () => void }) {
 
       <div className="grid grid-cols-1 gap-4 pb-6">
         {FEEDBACK_QUOTES.map(({ roleKey, name, date, textKey, avatar, avatarColor, rating }) => (
-          <div key={name} className="bg-white rounded-xl border border-border p-5">
+          <div key={name} className="bg-white rounded-xl border border-black/[0.06] shadow-sm hover:shadow-md transition-shadow duration-200 p-5">
             <div className="flex items-start gap-4">
               <div className={`w-11 h-11 rounded-full ${avatarColor} flex items-center justify-center flex-shrink-0 text-sm font-semibold`}>
                 {avatar}
@@ -1222,7 +1226,7 @@ function IntegrationsScreen({
         {CONNECTED_SOURCES.map(({ nameKey, descKey, statusKey, lastSyncKey, icon, statusColor }) => {
           const isSyncing = syncing === nameKey;
           return (
-            <div key={nameKey} className="bg-white rounded-xl border border-border p-5 flex items-center gap-4">
+            <div key={nameKey} className="bg-white rounded-xl border border-black/[0.06] shadow-sm hover:shadow-md transition-shadow duration-200 p-5 flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-[#F0F3F6] flex items-center justify-center flex-shrink-0 text-2xl">
                 {icon}
               </div>

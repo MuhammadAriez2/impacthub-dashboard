@@ -176,7 +176,7 @@ export function DataCleaningDemo({ onBack }: { onBack: () => void }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-5">
 
         {/* BEFORE */}
-        <div className="bg-white rounded-xl border border-border overflow-hidden">
+        <div className="bg-white rounded-xl border border-black/[0.06] shadow-sm overflow-hidden">
           <div className="px-4 py-3 border-b border-border bg-[#FAECE7]">
             <div className="flex items-center justify-between mb-0.5">
               <div className="flex items-center gap-2">
@@ -289,7 +289,7 @@ export function DataCleaningDemo({ onBack }: { onBack: () => void }) {
         </div>
 
         {/* AFTER */}
-        <div className="bg-white rounded-xl border border-border overflow-hidden relative">
+        <div className="bg-white rounded-xl border border-black/[0.06] shadow-sm overflow-hidden relative">
           <div
             className="px-4 py-3 border-b border-border transition-colors duration-700"
             style={{ backgroundColor: state === "done" ? "#C8EDD8" : "#E8F5EE" }}

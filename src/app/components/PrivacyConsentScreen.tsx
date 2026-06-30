@@ -76,7 +76,7 @@ export function PrivacyConsentScreen({ onBack }: { onBack: () => void }) {
       </div>
 
       {/* Consent summary */}
-      <div className="bg-white rounded-xl border border-border p-5 mb-4">
+      <div className="bg-white rounded-xl border border-black/[0.06] shadow-sm p-5 mb-4">
         <div className="flex items-center justify-between mb-3">
           <h2 className="text-sm font-semibold text-foreground">{t("privacy.consentOnFile")}</h2>
           <span
@@ -103,7 +103,7 @@ export function PrivacyConsentScreen({ onBack }: { onBack: () => void }) {
       </div>
 
       {/* Data collected */}
-      <div className="bg-white rounded-xl border border-border p-5 mb-4">
+      <div className="bg-white rounded-xl border border-black/[0.06] shadow-sm p-5 mb-4">
         <div className="flex items-center gap-2 mb-3">
           <Database size={15} className="text-[#1F7A68]" />
           <h2 className="text-sm font-semibold text-foreground">{t("privacy.whatDataTitle")}</h2>
@@ -119,14 +119,14 @@ export function PrivacyConsentScreen({ onBack }: { onBack: () => void }) {
       </div>
 
       {/* Data sharing */}
-      <div className="bg-white rounded-xl border border-border p-5 mb-4">
+      <div className="bg-white rounded-xl border border-black/[0.06] shadow-sm p-5 mb-4">
         <div className="flex items-center gap-2 mb-3">
           <Share2 size={15} className="text-[#1F7A68]" />
           <h2 className="text-sm font-semibold text-foreground">{t("privacy.whoSharedTitle")}</h2>
         </div>
         <div className="space-y-3">
           {DATA_SHARING.map(({ partyKey, detailKey, shared, icon }) => (
-            <div key={partyKey} className="flex items-start gap-3 p-3 rounded-lg bg-[#F8FAFB] border border-border">
+            <div key={partyKey} className="flex items-start gap-3 p-3 rounded-lg bg-white border border-black/[0.06] shadow-sm">
               <span className="text-lg leading-none shrink-0 mt-0.5">{icon}</span>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-foreground mb-0.5">{t(partyKey)}</p>
@@ -151,7 +151,7 @@ export function PrivacyConsentScreen({ onBack }: { onBack: () => void }) {
       </div>
 
       {/* Beneficiary consent list */}
-      <div className="bg-white rounded-xl border border-border p-5 mb-4">
+      <div className="bg-white rounded-xl border border-black/[0.06] shadow-sm p-5 mb-4">
         <h2 className="text-sm font-semibold text-foreground mb-1">{t("privacy.beneficiaryListTitle")}</h2>
         <p className="text-xs text-muted-foreground mb-4">
           {t("privacy.beneficiaryListDesc")}
@@ -163,7 +163,7 @@ export function PrivacyConsentScreen({ onBack }: { onBack: () => void }) {
             return (
               <div
                 key={b.id}
-                className="flex items-center gap-3 px-3 py-3 rounded-lg border border-border hover:bg-[#F8FAFB] transition-colors"
+                className="flex items-center gap-3 px-3 py-3 rounded-lg border border-black/[0.06] shadow-sm hover:shadow-md transition-shadow duration-200 hover:bg-[#F8FAFB] transition-colors"
               >
                 {/* Avatar */}
                 <div

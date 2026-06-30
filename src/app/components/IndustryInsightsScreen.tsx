@@ -168,7 +168,7 @@ export function IndustryInsightsScreen({ onBack }: { onBack: () => void }) {
       </div>
 
       {/* Sector card + selector */}
-      <div className="flex items-center justify-between mb-4 bg-white rounded-xl border border-border p-4">
+      <div className="flex items-center justify-between mb-4 bg-white rounded-xl border border-black/[0.06] shadow-sm p-4">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-[#E8F5EE] flex items-center justify-center shrink-0">
             <span className="text-base">{currentSector.emoji}</span>
@@ -243,7 +243,7 @@ export function IndustryInsightsScreen({ onBack }: { onBack: () => void }) {
           const isAbove = diff > 0;
           const isFlat = Math.abs(diff) < sectorAvg * 0.02;
           return (
-            <div key={labelKey} className="bg-white rounded-xl border border-border p-4">
+            <div key={labelKey} className="bg-white rounded-xl border border-black/[0.06] shadow-sm p-4">
               <div className="flex items-center justify-between mb-3">
                 <p className="text-sm font-medium text-foreground">{t(labelKey)}</p>
                 <span
@@ -261,7 +261,7 @@ export function IndustryInsightsScreen({ onBack }: { onBack: () => void }) {
       </div>
 
       {/* Best practices */}
-      <div className="bg-white rounded-xl border border-border p-5 mb-6">
+      <div className="bg-white rounded-xl border border-black/[0.06] shadow-sm p-5 mb-6">
         <div className="mb-1">
           <h2 className="pl-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground" style={{ borderLeft: "3px solid #4ACED1" }}>{t("insights.practicesTitle")}</h2>
         </div>
@@ -269,7 +269,7 @@ export function IndustryInsightsScreen({ onBack }: { onBack: () => void }) {
 
         <div className="space-y-3">
           {PRACTICES.map(({ titleKey, bodyKey, icon }) => (
-            <div key={titleKey} className="flex gap-3 p-3 rounded-lg bg-[#F8FAFB] border border-border">
+            <div key={titleKey} className="flex gap-3 p-3 rounded-lg bg-white border border-black/[0.06] shadow-sm">
               <span className="text-lg leading-none shrink-0 mt-0.5">{icon}</span>
               <div>
                 <p className="text-sm font-medium text-foreground mb-0.5">{t(titleKey)}</p>

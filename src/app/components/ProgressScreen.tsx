@@ -143,7 +143,7 @@ export function ProgressScreen({ onBack }: { onBack: () => void }) {
       {/* Per-metric cards */}
       <div className="space-y-5 pb-6">
         {METRIC_TRENDS.map(({ labelKey, unitKey, before, after, color, data, insightKey }) => (
-          <div key={labelKey} className="bg-white rounded-xl border border-border p-5">
+          <div key={labelKey} className="bg-white rounded-xl border border-black/[0.06] shadow-sm p-5">
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h2 className="text-sm font-semibold text-foreground">{t(labelKey)}</h2>

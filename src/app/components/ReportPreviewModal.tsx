@@ -184,7 +184,7 @@ export function ReportPreviewModal({ tier, onClose }: ReportPreviewModalProps) {
                   </h3>
                   <div className="space-y-2">
                     {FEEDBACK_SNIPPETS.map(({ quoteKey, name, roleKey }) => (
-                      <div key={name} className="flex gap-2 p-3 rounded-lg bg-[#F8FAFB] border border-border">
+                      <div key={name} className="flex gap-2 p-3 rounded-lg bg-white border border-black/[0.06] shadow-sm">
                         <Quote size={12} className="text-muted-foreground shrink-0 mt-0.5" />
                         <div>
                           <p className="text-xs text-foreground leading-relaxed mb-1">{t(quoteKey)}</p>
@@ -298,7 +298,7 @@ export function ReportPreviewModal({ tier, onClose }: ReportPreviewModalProps) {
               <p className="text-xs text-muted-foreground">{t(footerKey)}</p>
               <button
                 onClick={onClose}
-                className="flex items-center gap-2 bg-[#1F7A68] text-white text-xs font-medium px-3.5 py-2 rounded-lg hover:bg-[#196658] transition-colors shrink-0"
+                className="flex items-center gap-2 bg-[#1F7A68] text-white text-xs font-medium px-3.5 py-2 rounded-lg hover:bg-[#196658] transition-colors shrink-0 active:scale-[0.97]"
               >
                 <Download size={13} />
                 {t("report.download")}
