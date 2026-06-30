@@ -45,8 +45,8 @@ export function LanguageSwitcher() {
 
       {open && (
         <div
-          className="absolute bottom-full left-0 mb-2 w-52 bg-white rounded-xl border border-border shadow-lg overflow-hidden z-50"
-          style={{ animation: "dropIn 180ms ease both" }}
+          className="absolute bottom-full left-0 mb-2 w-52 rounded-xl overflow-hidden z-50 shadow-lg"
+          style={{ animation: "dropIn 180ms ease both", backgroundColor: "#0F2E26", border: "1px solid #1B5E38" }}
         >
           {LANGUAGES.map(({ code, label, flag }) => (
             <button
@@ -55,11 +55,14 @@ export function LanguageSwitcher() {
                 setLang(code);
                 setOpen(false);
               }}
-              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 hover:bg-[#F0F3F6] transition-colors text-left"
+              className="w-full flex items-center gap-2.5 px-3.5 py-2.5 transition-colors text-left"
+              style={{ color: "#9FE1CB" }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "rgba(159,225,203,0.1)"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "transparent"; }}
             >
               <span className="text-base leading-none">{flag}</span>
-              <span className="flex-1 text-sm text-foreground">{label}</span>
-              {code === lang && <Check size={14} className="text-[#1F7A68]" />}
+              <span className="flex-1 text-sm">{label}</span>
+              {code === lang && <Check size={14} style={{ color: "#4ACED1" }} />}
             </button>
           ))}
         </div>

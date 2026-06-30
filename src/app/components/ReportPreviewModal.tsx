@@ -15,10 +15,10 @@ import {
 import { useI18n } from "../i18n";
 
 const METRICS = [
-  { labelKey: "metric.peopleReached", value: "2,184", color: "#1B5E38", bg: "#E8F5EE" },
-  { labelKey: "metric.activitiesLogged", value: "312", color: "#1A3A6B", bg: "#EBF3FB" },
-  { labelKey: "metric.feedbackResponses", value: "148", color: "#633806", bg: "#FAEEDA" },
-  { labelKey: "metric.consentOnFile", value: "100%", color: "#1B5E38", bg: "#E8F5EE" },
+  { labelKey: "metric.peopleReached", value: "2,184", color: "#FFFFFF", bg: "#0F2E26" },
+  { labelKey: "metric.activitiesLogged", value: "312", color: "#FFFFFF", bg: "#1A3A6B" },
+  { labelKey: "metric.feedbackResponses", value: "148", color: "#FFFFFF", bg: "#633806" },
+  { labelKey: "metric.consentOnFile", value: "100%", color: "#FFFFFF", bg: "#1B5E38" },
 ];
 
 const OUTCOMES_DATA = [
@@ -108,11 +108,12 @@ export function ReportPreviewModal({ tier, onClose }: ReportPreviewModalProps) {
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-semibold text-white leading-tight">{t(titleKey)}</p>
                     <span
-                      className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+                      className="text-[10px] font-bold px-2 py-0.5 rounded"
                       style={{
-                        backgroundColor: isHigh ? "#F5A623" : isMedium ? "#2E6EA6" : "rgba(255,255,255,0.15)",
+                        backgroundColor: isHigh ? "#C97B10" : isMedium ? "#1D4ED8" : "#374151",
                         color: "white",
-                        letterSpacing: "0.05em",
+                        letterSpacing: "0.07em",
+                        boxShadow: isHigh ? "0 0 0 1px #F0A818" : "none",
                       }}
                     >
                       {isHigh ? "PRO" : isMedium ? "STARTER" : "FREE"}
@@ -153,11 +154,11 @@ export function ReportPreviewModal({ tier, onClose }: ReportPreviewModalProps) {
                 </h3>
                 <div className="grid grid-cols-2 gap-2.5">
                   {METRICS.map(({ labelKey, value, color, bg }) => (
-                    <div key={labelKey} className="rounded-lg p-3" style={{ backgroundColor: bg }}>
-                      <p className="text-lg font-bold" style={{ color, fontFamily: "var(--font-mono)" }}>
+                    <div key={labelKey} className="rounded-lg p-3.5" style={{ backgroundColor: bg }}>
+                      <p className="text-2xl font-bold" style={{ color, fontFamily: "var(--font-mono)" }}>
                         {value}
                       </p>
-                      <p className="text-xs font-medium" style={{ color }}>
+                      <p className="text-xs font-medium mt-0.5" style={{ color: "rgba(255,255,255,0.72)" }}>
                         {t(labelKey)}
                       </p>
                     </div>

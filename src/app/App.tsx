@@ -79,6 +79,10 @@ const SCORE_DATA = [
   { value: IMPACT_SCORE, color: "#1F7A68" },
   { value: 100 - IMPACT_SCORE, color: "#E4EBF2" },
 ];
+const SCORE_DATA_DARK = [
+  { value: IMPACT_SCORE, color: "#4ACED1" },
+  { value: 100 - IMPACT_SCORE, color: "rgba(255,255,255,0.12)" },
+];
 
 const METRICS = [
   {
@@ -280,7 +284,7 @@ function Sidebar({
               className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 text-left"
               style={
                 isActive
-                  ? { backgroundColor: "#1B5E38", color: "#ffffff" }
+                  ? { backgroundColor: "#1B5E38", color: "#ffffff", borderLeft: "3px solid #4ACED1", paddingLeft: "9px" }
                   : { color: "#9FE1CB" }
               }
               onMouseEnter={(e) => {
@@ -395,7 +399,7 @@ function DashboardScreen({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-foreground tracking-tight">{t("dash.title")}</h1>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight" style={{ fontFamily: "var(--font-display)" }}>{t("dash.title")}</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
             {t("dash.subtitle")}
           </p>
@@ -405,7 +409,11 @@ function DashboardScreen({
           <div className="relative">
             <button
               onClick={() => setShowExport((v) => !v)}
-              className="flex items-center gap-2 bg-[#1F7A68] text-white text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-[#196658] transition-colors"
+              className="flex items-center gap-2 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition-all"
+              style={{
+                background: "linear-gradient(135deg, #1F7A68 0%, #0F5748 100%)",
+                boxShadow: "0 4px 14px rgba(31,122,104,0.40), 0 1px 3px rgba(31,122,104,0.25)",
+              }}
             >
               <Download size={15} />
               {selectedExportKey ? t(selectedExportKey) : t("dash.export")}
@@ -476,53 +484,65 @@ function DashboardScreen({
       {/* Headline row: Revenue (left) + Impact Score (right) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Revenue headline card */}
-        <div className="bg-white rounded-xl border border-[#1F7A68]/25 p-5 shadow-sm">
+        <div
+          className="rounded-xl p-5 shadow-md"
+          style={{
+            background: "linear-gradient(135deg, #0F2E26 0%, #1A4A38 100%)",
+            border: "1px solid rgba(31,122,104,0.5)",
+          }}
+        >
           <div className="flex items-center gap-2.5 mb-3">
-            <div className="w-9 h-9 rounded-lg bg-[#C2E8D4] flex items-center justify-center shrink-0">
-              <Banknote size={17} className="text-[#1F7A68]" />
+            <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: "rgba(255,255,255,0.12)" }}>
+              <Banknote size={17} className="text-white" />
             </div>
             <div>
-              <p className="text-xs font-medium text-muted-foreground">{t("metric.revenue")}</p>
-              <div className="flex items-center gap-0.5 text-xs font-medium text-[#1F7A68] mt-0.5">
+              <p className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.60)" }}>{t("metric.revenue")}</p>
+              <div className="flex items-center gap-0.5 text-xs font-medium mt-0.5" style={{ color: "rgba(255,255,255,0.75)" }}>
                 <ArrowUp size={11} />
                 <span>9% {t("dash.trend.label")}</span>
               </div>
             </div>
           </div>
-          <p className="text-3xl font-bold text-[#1F7A68] tracking-tight" style={{ fontFamily: "var(--font-mono)" }}>
+          <p className="text-3xl font-bold text-white tracking-tight" style={{ fontFamily: "var(--font-mono)" }}>
             RM 184,500
           </p>
-          <p className="text-[11px] text-muted-foreground mt-3 mb-1">{t("dash.headline.revenueTrend")}</p>
+          <p className="text-[11px] mt-3 mb-1" style={{ color: "rgba(255,255,255,0.50)" }}>{t("dash.headline.revenueTrend")}</p>
           <ResponsiveContainer width="100%" height={64}>
             <AreaChart data={REVENUE_SPARKLINE} margin={{ top: 2, right: 0, bottom: 0, left: 0 }}>
               <defs>
                 <linearGradient id="gradRevenue" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#1F7A68" stopOpacity={0.18} />
-                  <stop offset="95%" stopColor="#1F7A68" stopOpacity={0} />
+                  <stop offset="5%" stopColor="rgba(255,255,255,0.35)" stopOpacity={1} />
+                  <stop offset="95%" stopColor="rgba(255,255,255,0)" stopOpacity={1} />
                 </linearGradient>
               </defs>
-              <Area type="monotone" dataKey="revenue" stroke="#1F7A68" strokeWidth={1.5} fill="url(#gradRevenue)" dot={false} />
+              <Area type="monotone" dataKey="revenue" stroke="rgba(255,255,255,0.75)" strokeWidth={1.5} fill="url(#gradRevenue)" dot={false} />
             </AreaChart>
           </ResponsiveContainer>
-          <div className="mt-3 pt-3 border-t border-black/[0.07]">
+          <div className="mt-3 pt-3" style={{ borderTop: "1px solid rgba(255,255,255,0.12)" }}>
             <div className="flex justify-between items-center mb-1.5">
-              <span className="text-xs opacity-60" style={{ color: "#1F7A68" }}>
+              <span className="text-xs" style={{ color: "rgba(255,255,255,0.55)" }}>
                 RM 184,500 {t("dash.metric.of")} RM 250,000 {t("dash.metric.target")}
               </span>
-              <span className="text-xs font-bold" style={{ color: "#1F7A68", fontFamily: "var(--font-mono)" }}>74%</span>
+              <span className="text-xs font-bold text-white" style={{ fontFamily: "var(--font-mono)" }}>74%</span>
             </div>
-            <div className="w-full h-1.5 rounded-full bg-black/10">
-              <div className="h-full rounded-full transition-all duration-700" style={{ width: "74%", backgroundColor: "#1F7A68" }} />
+            <div className="w-full h-1.5 rounded-full" style={{ backgroundColor: "rgba(255,255,255,0.15)" }}>
+              <div className="h-full rounded-full transition-all duration-700" style={{ width: "74%", backgroundColor: "rgba(255,255,255,0.70)" }} />
             </div>
           </div>
         </div>
 
         {/* Impact Score headline card */}
-        <div className="bg-white rounded-xl border border-border p-5 shadow-sm flex items-center gap-6">
+        <div
+          className="rounded-xl p-5 shadow-md flex items-center gap-6"
+          style={{
+            background: "linear-gradient(135deg, #0A1F40 0%, #1A3A6B 100%)",
+            border: "1px solid rgba(26,58,107,0.8)",
+          }}
+        >
           <div className="relative shrink-0" style={{ width: 120, height: 120 }}>
             <PieChart width={120} height={120}>
               <Pie
-                data={SCORE_DATA}
+                data={SCORE_DATA_DARK}
                 cx="50%"
                 cy="50%"
                 innerRadius={40}
@@ -532,30 +552,33 @@ function DashboardScreen({
                 dataKey="value"
                 strokeWidth={0}
               >
-                {SCORE_DATA.map((entry, i) => (
+                {SCORE_DATA_DARK.map((entry, i) => (
                   <Cell key={i} fill={entry.color} />
                 ))}
               </Pie>
             </PieChart>
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <span className="text-2xl font-bold text-[#1B5E38]" style={{ fontFamily: "var(--font-mono)", lineHeight: 1 }}>
+              <span className="text-2xl font-bold text-white" style={{ fontFamily: "var(--font-mono)", lineHeight: 1 }}>
                 {IMPACT_SCORE}
               </span>
-              <span className="text-xs text-muted-foreground mt-0.5">{t("dash.score.outOf")}</span>
+              <span className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.55)" }}>{t("dash.score.outOf")}</span>
             </div>
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
-              <h2 className="text-sm font-bold text-foreground tracking-tight">{t("dash.score.title")}</h2>
-              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#E8F5EE] text-[#1B5E38]">
+              <h2 className="text-sm font-bold text-white tracking-tight">{t("dash.score.title")}</h2>
+              <span
+                className="text-xs font-medium px-2 py-0.5 rounded-full"
+                style={{ backgroundColor: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.85)" }}
+              >
                 {t("dash.score.period")}
               </span>
             </div>
-            <p className="text-xs text-muted-foreground leading-relaxed">{t("dash.score.subtitle")}</p>
-            <div className="mt-3 w-full h-2 bg-[#E4EBF2] rounded-full overflow-hidden">
+            <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.55)" }}>{t("dash.score.subtitle")}</p>
+            <div className="mt-3 w-full h-2 rounded-full overflow-hidden" style={{ backgroundColor: "rgba(255,255,255,0.12)" }}>
               <div
-                className="h-full rounded-full bg-[#1F7A68] transition-all duration-700"
-                style={{ width: `${IMPACT_SCORE}%` }}
+                className="h-full rounded-full transition-all duration-700"
+                style={{ width: `${IMPACT_SCORE}%`, backgroundColor: "#4ACED1" }}
               />
             </div>
           </div>
@@ -616,11 +639,54 @@ function DashboardScreen({
         ))}
       </div>
 
+      {/* Data Cleaning Demo highlight */}
+      <div
+        className="relative rounded-2xl overflow-hidden p-5 flex items-center gap-5"
+        style={{ background: "linear-gradient(135deg, #0F2E26 0%, #1A4A38 100%)" }}
+      >
+        <div
+          className="absolute -right-4 -top-6 w-28 h-28 rounded-full pointer-events-none"
+          style={{ background: "radial-gradient(circle, rgba(76,206,209,0.14) 0%, transparent 70%)" }}
+        />
+        <div
+          className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+          style={{ backgroundColor: "rgba(255,255,255,0.10)" }}
+        >
+          <Sparkles size={20} className="text-[#4ACED1]" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="mb-0.5">
+            <span
+              className="text-[9px] font-bold px-2 py-0.5 rounded-full"
+              style={{ backgroundColor: "#4ACED1", color: "#0F2E26", letterSpacing: "0.07em" }}
+            >
+              LIVE DEMO
+            </span>
+          </div>
+          <h3 className="text-base font-bold text-white leading-tight">{t("cleaning.title")}</h3>
+          <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.48)" }}>
+            {t("cleaning.timeSaved.value")}
+          </p>
+        </div>
+        <button
+          onClick={() => onNavigate("nav.dataCleaning", "data-cleaning")}
+          className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2.5 rounded-xl shrink-0 transition-all hover:brightness-110"
+          style={{
+            background: "rgba(255,255,255,0.10)",
+            color: "white",
+            border: "1px solid rgba(255,255,255,0.18)",
+          }}
+        >
+          {t("nav.dataCleaning")}
+          <ChevronRight size={14} />
+        </button>
+      </div>
+
       {/* Mid row: Trend chart | Best performing activity */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-6">
         {/* 6-month area chart */}
         <div className="bg-white rounded-xl border border-border p-5">
-          <h2 className="text-sm font-semibold text-foreground mb-0.5">{t("dash.chart.title")}</h2>
+          <h2 className="pl-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-0.5" style={{ borderLeft: "3px solid #4ACED1" }}>{t("dash.chart.title")}</h2>
           <p className="text-xs text-muted-foreground mb-4">{t("dash.chart.subtitle")}</p>
           <ResponsiveContainer width="100%" height={120}>
             <AreaChart data={MONTHLY_TREND} margin={{ top: 4, right: 8, bottom: 0, left: -24 }}>
@@ -659,9 +725,7 @@ function DashboardScreen({
 
         {/* Best performing activity */}
         <div className="bg-white rounded-xl border border-border p-5">
-          <div className="flex items-center gap-2 mb-0.5">
-            <h2 className="text-sm font-semibold text-foreground">{t("dash.bestActivity.title")}</h2>
-          </div>
+          <h2 className="pl-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-0.5" style={{ borderLeft: "3px solid #4ACED1" }}>{t("dash.bestActivity.title")}</h2>
           <p className="text-xs text-muted-foreground mb-5">{t("dash.bestActivity.period")}</p>
           <div className="flex items-center gap-3 p-4 rounded-xl bg-[#E8F5EE] border border-[#1B5E38]/10 mb-4">
             <div className="w-10 h-10 rounded-lg bg-[#1F7A68] flex items-center justify-center flex-shrink-0">
@@ -715,7 +779,7 @@ function LogActivityScreen({
 
       <div className="mb-6">
         <div className="flex items-center gap-3 mb-1">
-          <h1 className="text-xl font-bold text-foreground tracking-tight">
+          <h1 className="text-2xl font-bold text-foreground tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
             {t("logActivity.title")}
           </h1>
           <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-[#FAEEDA] text-[#633806]">
@@ -728,7 +792,7 @@ function LogActivityScreen({
       </div>
 
       {/* ── Your Projects section ── */}
-      <h2 className="text-base font-semibold text-foreground tracking-tight mb-3">
+      <h2 className="pl-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-3" style={{ borderLeft: "3px solid #4ACED1" }}>
         {t("logActivity.yourProjects")}
       </h2>
 
@@ -739,8 +803,8 @@ function LogActivityScreen({
           { labelKey: "projects.summary.active", value: String(activeCount), color: "text-[#1A3A6B]", bg: "bg-[#EBF3FB]" },
           { labelKey: "projects.summary.totalBeneficiaries", value: String(totalBeneficiaries), color: "text-[#633806]", bg: "bg-[#FAEEDA]" },
         ].map(({ labelKey, value, color, bg }) => (
-          <div key={labelKey} className={`${bg} rounded-xl p-3`}>
-            <p className={`text-lg font-bold ${color} tracking-tight`} style={{ fontFamily: "var(--font-mono)" }}>{value}</p>
+          <div key={labelKey} className={`${bg} rounded-xl p-4`}>
+            <p className={`text-2xl font-bold ${color} tracking-tight`} style={{ fontFamily: "var(--font-mono)" }}>{value}</p>
             <p className={`text-xs font-medium ${color} mt-0.5`}>{t(labelKey)}</p>
           </div>
         ))}
@@ -778,7 +842,7 @@ function LogActivityScreen({
       </div>
 
       {/* ── Log an Activity section ── */}
-      <h2 className="text-base font-semibold text-foreground tracking-tight mb-4">
+      <h2 className="pl-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-4" style={{ borderLeft: "3px solid #4ACED1" }}>
         {t("logActivity.formSection")}
       </h2>
 

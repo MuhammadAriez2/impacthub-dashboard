@@ -145,7 +145,7 @@ export function IndustryInsightsScreen({ onBack }: { onBack: () => void }) {
 
       <div className="flex items-start justify-between mb-2">
         <div>
-          <h1 className="text-xl font-bold text-foreground tracking-tight mb-1">{t("insights.title")}</h1>
+          <h1 className="text-2xl font-bold text-foreground mb-1" style={{ fontFamily: "var(--font-display)" }}>{t("insights.title")}</h1>
           <p className="text-sm text-muted-foreground max-w-xl">{t("insights.subtitle")}</p>
         </div>
         <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-[#FAEEDA] text-[#633806] shrink-0 mt-1">
@@ -257,9 +257,8 @@ export function IndustryInsightsScreen({ onBack }: { onBack: () => void }) {
 
       {/* Best practices */}
       <div className="bg-white rounded-xl border border-border p-5 mb-6">
-        <div className="flex items-center gap-2 mb-1">
-          <Lightbulb size={15} className="text-[#633806]" />
-          <h2 className="text-sm font-semibold text-foreground">{t("insights.practicesTitle")}</h2>
+        <div className="mb-1">
+          <h2 className="pl-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground" style={{ borderLeft: "3px solid #4ACED1" }}>{t("insights.practicesTitle")}</h2>
         </div>
         <p className="text-xs text-muted-foreground mb-4">{t(currentSector.practicesSubtitleKey)}</p>
 
